@@ -1,0 +1,10 @@
+exportPattern("^[[:alpha:]]+")
+
+import(MASS,TSA,TTR,tseries)
+importFrom("graphics", "abline", "barplot", "hist", "layout", "legend",
+             "lines", "mtext", "par", "pie", "text")
+importFrom("stats", "AIC", "approx", "as.ts",
+             "density", "end", "frequency", "is.ts", "median", "na.omit",
+             "pacf", "predict", "quantile", "sd", "start", "ts",
+             "ts.plot", "var")
+
