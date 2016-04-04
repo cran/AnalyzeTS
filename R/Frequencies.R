@@ -78,7 +78,7 @@ if(is.data.frame(x) || is.matrix(x)){
 size1<-dim(x)[1]
 size2<-dim(x)[2]
 vt<-rep(0,size2); for(i in 1:size2) if(!is.numeric(x[,i])){vt[i]<-1}
-if(sum(vt)!=0)test1<-1 else stop("data khong co bien roi rac!")
+if(sum(vt)!=0)test1<-1 else stop("Error in data!")
 vt.loc<-1:size2
 data.char<-x[vt.loc[vt==1]]
 kq2<-mieuta.data.frame.char(data.char,r)

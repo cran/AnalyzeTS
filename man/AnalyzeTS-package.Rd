@@ -43,9 +43,11 @@ Maintainer: \packageMaintainer{AnalyzeTS}
 }
 
 \references{
-Nguyen Thi Diem My va Hong Viet Minh, Phan tich chuoi thoi gian voi su ho tro cua package AnalyzeTS.
+Nguyen Thi Diem My va Hong Viet Minh: Phan tich chuoi thoi gian voi su ho tro cua package AnalyzeTS.
 
 Hong Viet Minh, Luan van tot nghiep dai hoc: Phan tich so lieu thong ke voi ngon ngu R.
+
+Hong Viet Minh, Tran Thi Ngoc Han, Nguyen Thi Diem My, Mai Thi Hong Diem, Doan Hai Nghi: Phan tich chuoi thoi gian voi ngon ngu R su dung package AnalyzeTS.
 }
 
 \keyword{ package }

@@ -62,7 +62,7 @@ acf(x)
 pacf(x)
 }
 else
-print("Khong the ve do thi voi du lieu nay!")
+print("Can not plot Graph!")
 }
 
 is.wholenumber<-function(x,tol=.Machine$double.eps^0.5)

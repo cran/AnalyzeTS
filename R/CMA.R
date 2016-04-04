@@ -2,12 +2,12 @@ CMA <-
 function(x,n=5){
 L=n
 #Kiem tra so lieu
-if (!is.numeric(x)) stop("Chuoi khong hop le!")
+if (!is.numeric(x)) stop("Error in series!")
 is.wholenumber <-function(num, tol = .Machine$double.eps^0.5)  
 abs(num - round(num)) < tol
 
 if (is.na(L)||!is.numeric(L)||is.null(L)||!is.wholenumber(n)||L < 2) 
-  stop("Khoang truot L khong hop le!")
+  stop("Error in n!")
 
 sona<-function(x){
 f<-x
@@ -35,7 +35,7 @@ so.na1<-sona(x)
 
 kt<-0
 for(i in 1:length(x))if(i>so.na1[3] && i<so.na1[4] & is.na(x[i]))kt=kt+1
-if(kt>0)stop("Trong chuoi co gia tri NA!")
+if(kt>0)stop("Series has NA value!")
 
 x1<-x[(so.na1[3]+1):(so.na1[4]-1)]
 

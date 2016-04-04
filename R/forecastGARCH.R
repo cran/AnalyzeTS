@@ -2,8 +2,8 @@ forecastGARCH <-
 function(fitARMA,fitGARCH,r=3,trace=FALSE,newxreg=NULL){
 if(!is.null(newxreg)) 
 {
-if(is.vector(newxreg)) if(length(newxreg)!=1) stop("Chieu dai xreg phai la 1!")
-if(is.data.frame(newxreg)) if(dim(newxreg)[1]!=1) stop("Chieu dai xreg phai la 1!")
+if(is.vector(newxreg)) if(length(newxreg)!=1) stop("Length xreg must be 1!")
+if(is.data.frame(newxreg)) if(dim(newxreg)[1]!=1) stop("Length xreg must be 1!")
 }
 
 namthang<-function(data.ts){

@@ -650,7 +650,7 @@ if(type=="Singh") MO<-DB2[,4]
 if(type=="Heuristic") MO<-DB3[,4]
 if(type=="Chen-Hsu") MO<-DB4[,4]}
 else
-MO<-c("trace phai co gia tri 'TRUE' hoac 'FALSE'")
+MO<-c("trace must be 'TRUE' or 'FALSE'")
 #---xuat ket qua---
 
 
@@ -739,7 +739,7 @@ goc<-DB4[,2]
 dubao<-DB4[,4]
 
 if(length(goc)<50){
-plot(goc,col="blue",main=paste("Chen-Hsu",n,"fuzzy set"),type="o",
+plot(goc,col="blue",main=paste("Chen-Hsu"),type="o",
      pch=16,ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="o",pch=18)
@@ -747,7 +747,7 @@ legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1),p
 }
 
 if(length(goc)>49){
-plot(goc,col="blue",main=paste("Chen-Hsu",n,"fuzzy set"),type="l",
+plot(goc,col="blue",main=paste("Chen-Hsu"),type="l",
      ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="l")

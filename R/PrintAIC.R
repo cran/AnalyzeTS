@@ -2,8 +2,8 @@ PrintAIC <-
 function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL,Q=NULL),frequency=NULL),type=NULL,xreg=NULL){
     if(is.null(type))stop("Phai khai bao type cua mo hinh!")
     if(type!="ARMA" & type!="ARIMA" & type!="SARIMA" & type!="ARCH" & type!="GARCH" & type!="ARMAX" & type!="ARIMAX" & type!="SARIMAX")
-      stop("Ham PrintAIC khong ho tro mo hinh nay!\nBan vui long lien he voi nguoi phat trien ham de viet
-           code cho no, qua dia chi gmail <hongvietminh@gmail.com>")
+      stop("Fuction PrintAIC can not comput this model!\n You should connect to Maintainer to develop
+            code for the model by gmail <hongvietminh@gmail.com>")
     sona<-function(x){
       f<-x
       f[!is.na(f)]<-0
@@ -17,12 +17,12 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       abs(x - round(x)) < tol
     
     #Kiem tra du lieu dau vao
-    if (!is.numeric(DataTimeSeries)) stop("Chuoi khong hop le!")
-    if(sona(DataTimeSeries)!=0) stop("Chuoi co gia tri NA!")
+    if (!is.numeric(DataTimeSeries)) stop("Error in 'DataTimeSeries'!")
+    if(sona(DataTimeSeries)!=0) stop("Serries has NA value!")
     DataTimeSeries <- as.ts(DataTimeSeries)
     
     if(type=="ARMA"){
-      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Mo hinh khong phu hop!")
+      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Error in 'type'!")
       if (missing(order) ||is.null(order) || !is.numeric(order) || length(order) != 2L || any(order < 0)) stop("Loi o bac cua mo hinh!")
       
       #Ghi nhan cac he so
@@ -31,8 +31,8 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       q<-order[2]
       
       #Kiem he so mot lan nua
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p))  stop("Loi o bac cua mo hinh!")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q))  stop("Loi o bac cua mo hinh!")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p))  stop("Error in 'order'!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q))  stop("Error in 'order'!")
       
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1),labels=c("aic = ","aic ="))
@@ -82,23 +82,23 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua xuat
       kq1<-data.frame(mohinh,giatri.AIC,xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("ARMA","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","ARMA","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
+      print<-list(Models=kq1,Best=kq2)
     }#finish ARMA
     
     if(type=="ARIMA"){
-      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Mo hinh khong phu hop!")
+      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Error in 'type'!")
       if (missing(order) ||is.null(order) || !is.numeric(order) || length(order) != 3L || any(order < 0)) 
-        stop("Loi o bac cua mo hinh!")
+        stop("Error in 'order'!")
       
       #Ghi nhan cac he so
       p<-order[1]
@@ -106,9 +106,9 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       q<-order[3]
       
       #Kiem he so mot lan nua
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Loi o bac cua mo hinh!")
-      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("Loi o bac cua mo hinh!")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Loi o bac cua mo hinh!")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Error in 'order'!")
+      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("Error in 'order'!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Error in 'order'!")
       
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1),labels=c("aic = ","aic ="))
@@ -158,27 +158,27 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua xuat
       kq1<-data.frame(mohinh,giatri.AIC,xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("ARIMA","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","ARIMA","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
+      print<-list(Models=kq1,Best=kq2)
     }#finish ARIMA
     
     if(type=="SARIMA"){
       if (missing(order) || is.null(order) || !is.numeric(order) || length(order) != 3L || any(order < 0)) 
-        stop("'order' cau mo hinh SARIMA phai la mot vector so khong am va co chieu dai la 3!")
-      if (is.null(seas) || !is.list(seas))stop("'seas' phai la mot danh sach gom hai thanh phan 'order' va 'frequency'!")
+        stop("Error in 'order'!")
+      if (is.null(seas) || !is.list(seas))stop("'seas' must be a list and have 'order' and 'frequency'!")
       if (is.null(seas$order) || !is.numeric(seas$order) || length(seas$order) != 3 || any(seas$order < 0)) 
-        stop("'seas$order' phai la mot vector so khong am va co chieu dai la 3!")
+        stop("Error in 'seas$order'!")
       if (is.null(seas$frequency) || is.na(seas$frequency) || seas$frequency[1] < 0 ) 
-        stop("'seas$frequency' phai la mot so nguyen khong am!")
+        stop("Error in 'seas$frequency'!")
       
       #Ghi nhan cac he so
       p<-order[1]
@@ -189,13 +189,13 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       Q<-seas$order[3]
       s<-seas$frequency[1]
       #Kiem he so mot lan nua
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("p phai la nguyen duong")
-      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("d phai la nguyen duong")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("p phai la nguyen duong")
-      if (is.na(P)||!is.numeric(P) || P < 0 || !is.wholenumber(P)) stop("P phai la nguyen duong")
-      if (is.na(D)||!is.numeric(D) || D < 0 || !is.wholenumber(D)) stop("D phai la nguyen duong")
-      if (is.na(Q)||!is.numeric(Q) || Q < 0 || !is.wholenumber(Q)) stop("Q phai la nguyen duong")
-      if (is.na(s)||!is.numeric(s) || s < 0 || !is.wholenumber(s)) stop("s phai la nguyen duong")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Error in 'order'!")
+      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("Error in 'order'!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Error in 'order'!")
+      if (is.na(P)||!is.numeric(P) || P < 0 || !is.wholenumber(P)) stop("Error in 'seas$order'!")
+      if (is.na(D)||!is.numeric(D) || D < 0 || !is.wholenumber(D)) stop("Error in 'seas$order'!")
+      if (is.na(Q)||!is.numeric(Q) || Q < 0 || !is.wholenumber(Q)) stop("Error in 'seas$order'!")
+      if (is.na(s)||!is.numeric(s) || s < 0 || !is.wholenumber(s)) stop("Error in 'seas$frequency'!")
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1)*(P+1)*(Q+1),labels=c("aic = ","aic ="))
       models<-list(p=1:((p+1)*(q+1)*(P+1)*(Q+1)),d=1:((p+1)*(q+1)*(P+1)*(Q+1)),
@@ -260,27 +260,27 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua in ra
       kq1<-data.frame(mohinh,giatri.AIC,xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("SARIMA","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","SARIMA","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
+      print<-list(Models=kq1,Best=kq2)
     }#finish SARIMA
     
     if(type=="ARMAX"){
 
-      if(is.null(xreg))stop("Phai khai bao xreg cho mo hinh!")
-      if(is.vector(xreg)) if(length(xreg)!=length(DataTimeSeries))stop("Chieu dai chuoi quan sat va xreg khac nhau!")
-      if(is.data.frame(xreg)) if(dim(xreg)[1]!=length(DataTimeSeries))stop("Chieu dai chuoi quan sat va xreg khac nhau!")
+      if(is.null(xreg))stop("Error in 'xreg'!")
+      if(is.vector(xreg)) if(length(xreg)!=length(DataTimeSeries))stop("Error in 'xreg'!")
+      if(is.data.frame(xreg)) if(dim(xreg)[1]!=length(DataTimeSeries))stop("Error in 'xreg'!")
       
-      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Mo hinh khong phu hop!")
-      if (missing(order) ||is.null(order) || !is.numeric(order) || length(order) != 2L || any(order < 0)) stop("Loi o bac cua mo hinh!")
+      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Error in type!")
+      if (missing(order) ||is.null(order) || !is.numeric(order) || length(order) != 2L || any(order < 0)) stop("Error in 'order'!")
       
       #Ghi nhan cac he so
       p<-order[1]
@@ -288,8 +288,8 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       q<-order[2]
       
       #Kiem he so mot lan nua
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p))  stop("Loi o bac cua mo hinh!")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q))  stop("Loi o bac cua mo hinh!")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p))  stop("Error in 'order'!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q))  stop("Error in 'order'!")
       
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1),labels=c("aic = ","aic ="))
@@ -339,28 +339,28 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua xuat
       kq1<-data.frame(mohinh,giatri.AIC,xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("ARMAX","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","ARMAX","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
-    }#finish ARMAX
+      print<-list(Models=kq1,Best=kq2)
+      }#finish ARMAX
     
     if(type=="ARIMAX"){
       
-      if(is.null(xreg))stop("Phai khai bao xreg cho mo hinh!")
-      if(is.vector(xreg)) if(length(xreg)!=length(DataTimeSeries))stop("Chieu dai chuoi quan sat va xreg khac nhau!")
-      if(is.data.frame(xreg)) if(dim(xreg)[1]!=length(DataTimeSeries))stop("Chieu dai chuoi quan sat va xreg khac nhau!")
+      if(is.null(xreg))stop("Error in 'xreg'!")
+      if(is.vector(xreg)) if(length(xreg)!=length(DataTimeSeries))stop("Error in 'xreg'!")
+      if(is.data.frame(xreg)) if(dim(xreg)[1]!=length(DataTimeSeries))stop("Error in 'xreg'!")
       
-      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Mo hinh khong phu hop!")
+      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Error in type!")
       if (missing(order) ||is.null(order) || !is.numeric(order) || length(order) != 3L || any(order < 0)) 
-        stop("Loi o bac cua mo hinh!")
+        stop("Error in order!")
       
       #Ghi nhan cac he so
       p<-order[1]
@@ -368,9 +368,9 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       q<-order[3]
       
       #Kiem he so mot lan nua
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Loi o bac cua mo hinh!")
-      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("Loi o bac cua mo hinh!")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Loi o bac cua mo hinh!")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Error in order!")
+      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("Error in order!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Error in order!")
       
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1),labels=c("aic = ","aic ="))
@@ -420,33 +420,33 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua xuat
       kq1<-data.frame(mohinh,giatri.AIC,xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("ARIMAX","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","ARIMAX","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
+      print<-list(Models=kq1,Best=kq2)
     }#finish ARIMAX
     
     if(type=="SARIMAX"){
       
-      if(is.null(xreg))stop("Phai khai bao xreg cho mo hinh!")
-      if(is.vector(xreg)) if(length(xreg)!=length(DataTimeSeries))stop("Chieu dai chuoi quan sat va xreg khac nhau!")
-      if(is.data.frame(xreg)) if(dim(xreg)[1]!=length(DataTimeSeries))stop("Chieu dai chuoi quan sat va xreg khac nhau!")
+      if(is.null(xreg))stop("Error in 'xreg'!")
+      if(is.vector(xreg)) if(length(xreg)!=length(DataTimeSeries))stop("Error in 'xreg'!")
+      if(is.data.frame(xreg)) if(dim(xreg)[1]!=length(DataTimeSeries))stop("Error in 'xreg'!")
       
       
       if (missing(order) || is.null(order) || !is.numeric(order) || length(order) != 3L || any(order < 0)) 
-        stop("'order' cau mo hinh SARIMA phai la mot vector so khong am va co chieu dai la 3!")
-      if (is.null(seas) || !is.list(seas))stop("'seas' phai la mot danh sach gom hai thanh phan 'order' va 'frequency'!")
+        stop("Error in order!")
+      if (is.null(seas) || !is.list(seas))stop("'seas' must be a list and have 'order' and 'frequency'!")
       if (is.null(seas$order) || !is.numeric(seas$order) || length(seas$order) != 3 || any(seas$order < 0)) 
-        stop("'seas$order' phai la mot vector so khong am va co chieu dai la 3!")
+        stop("Error in 'seas$order'!")
       if (is.null(seas$frequency) || is.na(seas$frequency) || seas$frequency[1] < 0 ) 
-        stop("'seas$frequency' phai la mot so nguyen khong am!")
+        stop("Error in 'seas$frequency'!")
       
       #Ghi nhan cac he so
       p<-order[1]
@@ -457,13 +457,13 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       Q<-seas$order[3]
       s<-seas$frequency[1]
       #Kiem he so mot lan nua
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("p phai la nguyen duong")
-      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("d phai la nguyen duong")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("p phai la nguyen duong")
-      if (is.na(P)||!is.numeric(P) || P < 0 || !is.wholenumber(P)) stop("P phai la nguyen duong")
-      if (is.na(D)||!is.numeric(D) || D < 0 || !is.wholenumber(D)) stop("D phai la nguyen duong")
-      if (is.na(Q)||!is.numeric(Q) || Q < 0 || !is.wholenumber(Q)) stop("Q phai la nguyen duong")
-      if (is.na(s)||!is.numeric(s) || s < 0 || !is.wholenumber(s)) stop("s phai la nguyen duong")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Error in order!")
+      if (is.na(d)||!is.numeric(d) || d < 0 || !is.wholenumber(d)) stop("Error in order!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Error in order!")
+      if (is.na(P)||!is.numeric(P) || P < 0 || !is.wholenumber(P)) stop("Error in seas$order!")
+      if (is.na(D)||!is.numeric(D) || D < 0 || !is.wholenumber(D)) stop("Error in seas$order!")
+      if (is.na(Q)||!is.numeric(Q) || Q < 0 || !is.wholenumber(Q)) stop("Error in seas$order!")
+      if (is.na(s)||!is.numeric(s) || s < 0 || !is.wholenumber(s)) stop("Error in seas$frequency!")
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1)*(P+1)*(Q+1),labels=c("aic = ","aic ="))
       models<-list(p=1:((p+1)*(q+1)*(P+1)*(Q+1)),d=1:((p+1)*(q+1)*(P+1)*(Q+1)),
@@ -528,29 +528,29 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua in ra
       kq1<-data.frame(mohinh,giatri.AIC,xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("SARIMAX","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","SARIMAX","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
-    }#finish SARIMAX
+      print<-list(Models=kq1,Best=kq2)
+     }#finish SARIMAX
     
     if(type=="ARCH"){
       
-      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Mo hinh khong phu hop!")
+      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Error in 'type'!")
       if (missing(order) || is.null(order) ||!is.numeric(order) || length(order) != 1L || any(order < 0)) 
-        stop("'order' cua mo hinh ARCH phai la mot so nguyen duong")
+        stop("Error in 'order'!")
       
       #Ghi nhan cac he so
       p<-0
       q<-order[1]
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("q phai la nguyen duong")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Error in 'order'!")
       
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1),labels=c("aic = ","aic ="))
@@ -595,30 +595,30 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua xuat
       kq1<-data.frame("Cac mo hinh ARCH.." = mohinh,"...Gia tri AIC.." = giatri.AIC,"....xep loai"=xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("ARCH","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","ARCH","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
-      print<-list(mohinh=kq1,best=kq2)
-    }#finish ARCH
+      print<-list(Models=kq1,Best=kq2)
+     }#finish ARCH
     
     if(type=="GARCH"){
       
-      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Mo hinh khong phu hop!")
+      if(!is.null(seas$order)||!is.null(seas$frequency))stop("Error in 'type'!")
       if (missing(order) || is.null(order) ||!is.numeric(order) || length(order) != 2L || any(order < 0)) 
-        stop("'order' cua mo hinh GARCH phai la mot vector gom hai so nguyen duong")
+        stop("Error in 'order'!")
       
       #Ghi nhan cac he so
       p<-order[1]
       q<-order[2]
-      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("p phai la nguyen duong")
-      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("q phai la nguyen duong")
+      if (is.na(p)||!is.numeric(p) || p < 0 || !is.wholenumber(p)) stop("Error in 'order'!")
+      if (is.na(q)||!is.numeric(q) || q < 0 || !is.wholenumber(q)) stop("Error in 'order'!")
       
       #To hop mo hinh, tinh aic
       anser<-gl(1,1,length=(p+1)*(q+1),labels=c("aic = ","aic ="))
@@ -663,18 +663,17 @@ function(DataTimeSeries,order=c(p,d=NULL,q=NULL),seas=list(order=c(P=NULL,D=NULL
       
       #xu ly ket qua xuat
       kq1<-data.frame("Cac mo hinh GARCH.." = mohinh,"...Gia tri AIC.." = giatri.AIC,"....xep loai"=xl)
-      namescot1<-paste("Mo","hinh",sep=" ")
-      namescot2<-paste("Gia","tri","AIC",sep=" ")
-      namescot3<-paste("Xep","loai",sep=" ")
+      namescot1<-paste("GARCH","models",sep=" ")
+      namescot2<-paste("AIC","values",sep=" ")
+      namescot3<-paste("Sort","by","AIC",sep=" ")
       colnames(kq1)<-c(namescot1,namescot2,namescot3)
       stt<-1:length(mohinh)
-      for(j in 1:length(mohinh)) stt[j]<-paste("mo hinh",j)
+      for(j in 1:length(mohinh)) stt[j]<-paste("Model ",j)
       dimnames(kq1)[[1]]<-stt
       kq2<-data.frame("the.best.model"=paste(mohinh[id.best], giatri.AIC[id.best]))
-      colnames(kq2)<-c(paste("Mo","hinh","toi","uu",sep=" "))
+      colnames(kq2)<-c(paste("The","best","GARCH","model",sep=" "))
       dimnames(kq2)[[1]]<-" "
       print<-list(mohinh=kq1,best=kq2)
-      
     }#finsh GARCH
     
     print
