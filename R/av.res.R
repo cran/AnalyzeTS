@@ -10,19 +10,19 @@ function (Y = NULL, F = NULL, E = NULL, r = 3)
     else stop("Unknow members!")
     if (Model == "YF") {
         if (!is.data.frame(Y) || !is.data.frame(F)) 
-            stop("Cac tham so cua ham phai la data frame!")
+            stop("'Y' and 'F' must be data frames!")
         if (length(Y) != 1) 
-            stop("Data frame gia tri quan sat phai co 1 cot!")
+            stop("Error in Y!")
         if (dim(Y)[1] != dim(F)[1]) 
-            stop("So phan tu cac chuoi khong bang nhau!")
+            stop("Length(Y) != length(F)!")
     }
     else if (Model == "YE") {
         if (!is.data.frame(Y) || !is.data.frame(E)) 
-            stop("Cac tham so cua ham phai la data frame!")
+            stop("'Y' and 'E' must be data frames!")
         if (length(Y) != 1) 
-            stop("Data frame gia tri quan sat phai co 1 cot!")
+            stop("Error in Y!")
         if (dim(Y)[1] != dim(E)[1]) 
-            stop("So phan tu cac chuoi khong bang nhau!")
+            stop("Length(Y) != length(E)!")
     }
     if (Model == "YF") 
         n <- dim(F)[2]

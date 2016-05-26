@@ -1,4 +1,4 @@
-   \name{fuzzy.ts2}
+\name{fuzzy.ts2}
 \alias{fuzzy.ts2}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -8,20 +8,19 @@ Fuzzy Times Series 2
 Predicts time series by fuzziness method according to Abbasov-Manedova model.
 }
 \usage{
-fuzzy.ts2(ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
-r = 4, trace = FALSE, forecast = NULL, plot = FALSE)
+fuzzy.ts2(ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL, trace = FALSE,
+forecast = NULL, plot = FALSE, fty = c("ts", "f"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ts}{
-  Observation series.
+Observation series.
 }
   \item{n}{
 Number of fuzzy set.
 }
   \item{w}{
-'w' parameter.
-}
+The 'w' parameter.}
   \item{D1}{
 A adequate value.
 }
@@ -31,21 +30,23 @@ A adequate value.
   \item{C}{
 A optional constant.
 }
-  \item{r}{
-Rounds the answer to the specified number of decimal places (default 4).
-}
   \item{trace}{
-  Let trace=TRUE to print all of calculation results out to creen.
+ Let trace=TRUE to print all of calculation results out to creen.
   
-  Let trace=FALSE (default) to only print forecasting series out to creen.
-}
+ Let trace=FALSE (default) to only print forecasting series out to creen.
+  }
   \item{forecast}{
 Number of points to forecast in future.
 }
   \item{plot}{
  Let plot=TRUE to paint graph of obsevation series and fuzzy series.
   
-  Let plot=FLASE (default) to do not paint graph.
+ Let plot=FLASE (default) to do not paint graph.
+ }
+  \item{fty}{
+fty="f", forecasting timeseries of furetrue are counted from forecast timeseries of past.
+
+fty="ts", forecasting timeseries of furetrue are counted from observation timeseries of past.
 }
 }
 
@@ -57,9 +58,13 @@ Number of points to forecast in future.
 \item{table4}{Interpolate values.}
 \item{table5}{Forecasting values.}
 \item{table6}{The change fuzzy of forecasting series.}
-\item{accuracy}{Information about 7 accuracy of forecasting model.}
+\item{timeseries}{Forecasting timeseries.}
+\item{accuracy}{Information about 8 accuracy of forecasting model.}
 }
 
+\references{
+Abbasov, A.M. and Mamedova, M.H., 2003. Application of fuzzy time series to population forecasting.
+}
 \author{
 Doan Hai Nghi <Hainghi1426262609121094@gmail.com> 
 
@@ -71,22 +76,14 @@ Hong Viet Minh <hongvietminh@gmail.com>
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
+\seealso{
+\code{\link{fuzzy.ts3}}
+}
 \examples{
-
-abbasov2<-fuzzy.ts2(lh,C=0.0001,n=5,w=2,forecast=10,plot=TRUE,trace=TRUE)
-abbasov2
-
-abbasov5<-fuzzy.ts2(lh,C=0.0001,n=5,w=5,forecast=10,trace=TRUE)
-abbasov8<-fuzzy.ts2(lh,C=0.0001,n=5,w=8,forecast=10,trace=TRUE)
-abbasov10<-fuzzy.ts2(lh,C=0.0001,n=5,w=10,forecast=10,trace=TRUE)
-abbasov12<-fuzzy.ts2(lh,C=0.0001,n=5,w=12,forecast=10,trace=TRUE)
-
-sosanh<-rbind(abbasov2$accuracy,abbasov5$accuracy,abbasov8$accuracy,
-        abbasov10$accuracy,abbasov12$accuracy)
-rownames(sosanh)<-c("abbasov2","abbasov5","abbasov8","abbasov10","abbasov12")
-sosanh
+layout(1:2)
+fuzzy.ts2(lh,n=5,w=5,C=0.01,forecast=5,fty="f",trace=TRUE,plot=TRUE)
+fuzzy.ts2(lh,n=5,w=5,C=0.01,forecast=5,fty="ts",plot=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{fuzzy.ts2}
-
+\keyword{ fuzzy.ts2 }% use one of  RShowDoc("KEYWORDS")

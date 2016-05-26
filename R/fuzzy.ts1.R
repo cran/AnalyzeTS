@@ -1,63 +1,9 @@
 fuzzy.ts1 <-
-function(ts,n=5,D1=0,D2=0,type=c("Chen","Singh","Heuristic","Chen-Hsu"),bin=NULL,trace=FALSE,divide=NULL,plot=FALSE){
+function(ts,n=5,D1=0,D2=0,type=c("Chen","Singh","Heuristic","Chen-Hsu"),bin=NULL,trace=FALSE,plot=FALSE){
 
 #--ham con---
 is.wholenumber <-function(x, tol = .Machine$double.eps^0.5)  
 abs(x - round(x)) < tol
-
-matdo<-function(x,g){
-method <- 1
-x.unique <- sort(unique(x))
-min.dif <- min(diff(x.unique),na.rm=TRUE)/2
-min.dif.factor <- 1
-nnm <- sum(!is.na(x))
-n <- table(x)
-xx <- as.double(names(n))
-cum <- cumsum(n)
-m <- length(xx)
-y <- as.integer(ifelse(is.na(x), NA, 1))
-cuts <- approx(cum,xx,xout=(1:g)*nnm/g,method="constant",rule=2,f=1)$y
-cuts[length(cuts)] <- max(xx)
-lower <- xx[1]
-upper <- 1e+45
-up <- low <- double(g)
-i <- 0
-for (j in 1:g) {
-cj <- if (method == 1 || j == 1) cuts[j]
-else {
-s <- if (is.na(lower)) 
-FALSE
-else xx >= lower
-cum.used <- if (all(s)) 0
-else max(cum[!s])
-if (j == m) max(xx)
-else if (sum(s) < 2) max(xx)
-else approx(cum[s] - cum.used, xx[s], xout = (nnm - 
-cum.used)/(g - j + 1), method = "constant", rule = 2, f = 1)$y
-}
-if (cj == upper) next
-i <- i + 1
-upper <- cj
-y[x >= (lower - min.dif.factor * min.dif)] <- i
-low[i] <- lower
-lower <- if (j == g) upper
-else min(xx[xx > upper],na.rm=TRUE)
-if (is.na(lower)) lower <- upper
-up[i] <- lower
-}
-low <- low[1:i]
-up <- up[1:i]
-kq=c(low,up[length(up)])
-v=rep(0,length(kq))
-for(i in 1:length(kq))
-{tt=length(x[x==kq[i]])
-if(tt!=0)v[i]=i}
-v[v==0]<-NA
-v<-na.omit(v)
-for(i in 1:length(v))
-kq[v[i]]=kq[v[i]]-10^(-3)
-kq
-}
 
 rule1<-function(x2,x1,A3,D){
 #trich thong tin
@@ -175,18 +121,6 @@ print<-namkq
 print
 }
 
-divide.distance<-function(tsi,f,min.tsi,max.tsi){
-min.x=min(tsi,min.tsi)
-max.x=max(tsi,max.tsi)
-h=(max.x-min.x)/f
-k<-1:(f+1);
-for(i in 1:(f+1)){
-if(i==1)k[i]=min.x
-else
-k[i]=min.x+(i-1)*h
-}
-k
-}
 
 quanhe<-function(ts,type){
 qh<-1:length(ts)
@@ -218,8 +152,6 @@ type<-match.arg(type)
 if(type!="Chen" & type!="Singh" & type!="Heuristic" & type!="Chen-Hsu") stop("Error in 'type'!")
 
 if(type!="Chen-Hsu")if(!is.null(bin))stop("'bin' just for Chen-Hsu model!")
-if(!is.null(divide))if(type!="Chen-Hsu") stop("'divide' just for Chen-Hsu model!")
-if(type=="Chen-Hsu")if(is.null(divide))divide<-c("distance") else if(divide!="distance" & divide!="density")stop("'divide' must be 'distance' or 'density'!")
 #---kiem tra input---
 
 
@@ -476,40 +408,15 @@ DB3<-data.frame(thoidiem,sl.goc=D1$ts,quanhemo=quanhemokq,.....sl.mo=Heuristic)
 
 #type Chen va Hsu
 if(type=="Chen-Hsu"){
-if(is.null(bin)){ #bin==null
-#Phan lai tap mo
-b<-D$ni
-level=max(round(length(ts)/n-0.5),min(b),2)#tuy theo y nguoi dung
-f<-1:n
-for(i in 1:n) {if(b[i]>(level+2))f[i]=round(b[i]/level+0.5) else f[i]=1;
-               if(f[i]==0) f[i]=1}
-n2=sum(f)
-U2<-1:n2; k2<-1:(n2+1); t=0; k2[1]<-k[1]
-for( i in 1:n){
-tsi=ts[ts>=D$low[i]]
-tsi=tsi[tsi<=D$up[i]]
-if(divide=="density")new=matdo(tsi,f[i])
-else
-if(divide=="distance")new=divide.distance(tsi,f[i],D$low[i],D$up[i])
-else
-stop("divide phai co gia tri la 'distance' hoac 'frequency'!")
-new[1]=min(new[1],D$low[i])
-new[length(new)]=max(new[length(new)],D$up[i])
-for(j in 2:(f[i]+1)){
-t=t+1
-k2[t+1]=new[j]
-U2[t]=paste("A",t,sep="")
-}
-}
-} else{   #bin !=null
+if(!is.null(bin)){ 
+
 if(min(bin)<=min.x || max(bin)>=max.x || length(bin)<1)
-stop("gia tri tam bin khong hop le!")
+stop("Error in 'bin'!")
 k2<-1:(length(bin)+2);U2<-1:(length(bin)+1)
 k2[1]<-min.x;k2[length(k2)]<-max.x
 for(t in 2:(length(k2)-1)) k2[t]=bin[t-1]
 for(t in 1:(length(bin)+1)) U2[t]=paste("A",t,sep="")
 n2<-length(U2)
-}
 
 D.ch<-data.frame(U2,low2=k2[1:n2],up2=k2[2:(n2+1)])
 D.ch$Bw2<-(1/2)*(D.ch$low+D.ch$up)
@@ -524,6 +431,7 @@ if (D.ch$low2[j]<=ts[i] & ts[i]<=D.ch$up2[j])
 D1.ch<-data.frame(ts,loai2,loai2.old=c(NA,loai2[1:(length(loai2)-1)]))
 b<-table(D1.ch$loai2)
 quanhemokq<-paste(D1.ch$loai2,quanhemo,D1.ch$loai2.old,sep="")
+
 
 ni<-1:n2
 for(i in 1:n2)
@@ -553,7 +461,7 @@ else
 Dt<-D.ch
 #Xoa bo level thua: the end
 
-#Giai mo va du bao
+#Giai mo va du bao: begin
 X=ts
 A<-as.character(D1.ch$loai2)
 P<-1:length(X)
@@ -585,34 +493,22 @@ if(A[t+1]==A[t] & different<=0) P[t+1]=rule3(X[t],X[t-1],X[t-2],A[t+1],Dt)#th6
 P<-ts(P,start=start(ts),frequency=frequency(ts))
 DB4<-data.frame(thoidiem,sl.goc=D1.ch$ts,quanhemo=quanhemokq,".....sl.mo"=P)
 
-diem25<-1:length(D.ch[,3])
-diem75<-1:length(D.ch[,3])
-h<-(D.ch[,3]-D.ch[,2])/4
-canduoi<-D.ch[,2]
-for(i in 1:length(D.ch[,3])){
-diem25[i]<-canduoi[i]+1*h[i]
-diem75[i]<-canduoi[i]+3*h[i]}
-
-D.ch<-data.frame(D.ch[,1],D.ch[,2],diem25,D.ch[,4],diem75,D.ch[,3],D.ch[,5])
-
 namescot1<-"set"
 namescot2<-"dow"
-namescot3<-"0.25"
-namescot4<-"0.50"
-namescot5<-"0.75"
-namescot6<-"up"
-namescot7<-"num"
+namescot3<-"up"
+namescot4<-"mid"
+namescot5<-"num"
+colnames(D.ch)<-c(namescot1,namescot2,namescot3,namescot4,namescot5)
 
-colnames(D.ch)<-c(namescot1,namescot2,namescot3,namescot4,namescot5,namescot6,namescot7)
-}#finish chen-hsu
-#---giai mo va du bao---
+#giai mo va du bao: finish
+}}#finish chen-hsu
 
 
 #---tinh toan do chinh xac---
 if(type=="Chen")  accuracy<-av.res(Y=data.frame(DB1[,2]),F=data.frame(Chen=DB1[,4])) 
 if(type=="Singh")  accuracy<-av.res(Y=data.frame(DB2[,2]),F=data.frame(Singh=DB2[,4]))
 if(type=="Heuristic")  accuracy<-av.res(Y=data.frame(DB3[,2]),F=data.frame(Heuristic=DB3[,4]))
-if(type=="Chen-Hsu") accuracy<-av.res(Y=data.frame(DB4[,2]),F=data.frame("Chen-Hsu"=DB4[,4]))
+if(type=="Chen-Hsu" & !is.null(bin)) accuracy<-av.res(Y=data.frame(DB4[,2]),F=data.frame("Chen-Hsu"=DB4[,4]))
 #---tinh toan do chinh xac---
 
 
@@ -633,13 +529,13 @@ namescot4<-"forecast"
 if(type=="Chen")colnames(DB1)<-c(namescot1,namescot2,namescot3,namescot4)
 if(type=="Singh")colnames(DB2)<-c(namescot1,namescot2,namescot3,namescot4)
 if(type=="Heuristic")colnames(DB3)<-c(namescot1,namescot2,namescot3,namescot4)
-if(type=="Chen-Hsu")colnames(DB4)<-c(namescot1,namescot2,namescot3,namescot4)
+if(type=="Chen-Hsu" & !is.null(bin))colnames(DB4)<-c(namescot1,namescot2,namescot3,namescot4)
 
 if(type=="Chen") MO<-list(type="Chen",table1=D,table2=DB1,accuracy=accuracy)
 if(type=="Singh") MO<-list(type="Singh",table1=D,table2=DB2,accuracy=accuracy)
 if(type=="Heuristic") MO<-list(type="Heuristic",table1=D,table2=DB3,accuracy=accuracy)
 if(type=="Chen-Hsu") {
-if(is.null(bin)) MO<-list(type="Chen-Hsu",table1=D,table2=D.ch,table3=DB4,accuracy=accuracy)
+if(is.null(bin)) MO<-list(type="Chen-Hsu",table1=D)
 else 
 if(!is.null(bin)) MO<-list(type="Chen-Hsu",table1=D.ch,table2=DB4,accuracy=accuracy)
 }}
@@ -648,7 +544,9 @@ if(trace==FALSE){
 if(type=="Chen") MO<-DB1[,4]
 if(type=="Singh") MO<-DB2[,4]
 if(type=="Heuristic") MO<-DB3[,4]
-if(type=="Chen-Hsu") MO<-DB4[,4]}
+if(type=="Chen-Hsu" & !is.null(bin)) MO<-DB4[,4]
+if(type=="Chen-Hsu" & is.null(bin)) MO<-list(type="Chen-Hsu",table1=D)
+}
 else
 MO<-c("trace must be 'TRUE' or 'FALSE'")
 #---xuat ket qua---
@@ -660,12 +558,16 @@ if(type=="Chen") {
 goc<-DB1[,2]
 dubao<-DB1[,4]
 
+n.dothi<-prod(par()$mfrow)
+n.dothi
+
 if(length(goc)<50){
 plot(goc,col="blue",main=paste("Chen",n,"fuzzy set"),type="o",
      pch=16,ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="o",pch=18)
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1),pch=c(16,18))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),pch=c(16,18),cex=1/n.dothi)
 }
 
 if(length(goc)>49){
@@ -673,25 +575,31 @@ plot(goc,col="blue",main=paste("Chen",n,"fuzzy set"),type="l",
      ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="l")
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),cex=1/n.dothi)
 }
 
+if(n.dothi==1){
 k.ve<-par()$yaxp
 h=(k.ve[2]-k.ve[1])/k.ve[3]
 for(i in 0:k.ve[3]) abline(h=k.ve[1]+h*i,lty=3,col="gray")
 }
-
+}
 
 if(type=="Singh"){
 goc<-DB2[,2]
 dubao<-DB2[,4]
+
+n.dothi<-prod(par()$mfrow)
+n.dothi
 
 if(length(goc)<50){
 plot(goc,col="blue",main=paste("Singh",n,"fuzzy set"),type="o",
      pch=16,ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="o",pch=18)
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1),pch=c(16,18))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),pch=c(16,18),cex=1/n.dothi)
 }
 
 if(length(goc)>49){
@@ -699,25 +607,31 @@ plot(goc,col="blue",main=paste("Singh",n,"fuzzy set"),type="l",
      ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="l")
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),,cex=1/n.dothi)
 }
 
+if(n.dothi==1){
 k.ve<-par()$yaxp
 h=(k.ve[2]-k.ve[1])/k.ve[3]
 for(i in 0:k.ve[3]) abline(h=k.ve[1]+h*i,lty=3,col="gray")
 }
-
+}
 
 if(type=="Heuristic") {
 goc<-DB3[,2]
 dubao<-DB3[,4]
+
+n.dothi<-prod(par()$mfrow)
+n.dothi
 
 if(length(goc)<50){
 plot(goc,col="blue",main=paste("Heuristic",n,"fuzzy set"),type="o",
      pch=16,ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="o",pch=18)
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1),pch=c(16,18))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),pch=c(16,18),cex=1/n.dothi)
 }
 
 if(length(goc)>49){
@@ -725,39 +639,54 @@ plot(goc,col="blue",main=paste("Heuristic",n,"fuzzy set"),type="l",
      ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="l")
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),cex=1/n.dothi)
 }
 
+if(n.dothi==1){
 k.ve<-par()$yaxp
 h=(k.ve[2]-k.ve[1])/k.ve[3]
 for(i in 0:k.ve[3]) abline(h=k.ve[1]+h*i,lty=3,col="gray")
 }
-
+}
 
 if(type=="Chen-Hsu") {
+if(!is.null(bin)){
+n=dim(D.ch)[1]
 goc<-DB4[,2]
 dubao<-DB4[,4]
 
+n.dothi<-prod(par()$mfrow)
+n.dothi
+
 if(length(goc)<50){
-plot(goc,col="blue",main=paste("Chen-Hsu"),type="o",
+plot(goc,col="blue",main=paste("Chen-Hsu",n,"fuzzy set"),type="o",
      pch=16,ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="o",pch=18)
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1),pch=c(16,18))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),pch=c(16,18),cex=1/n.dothi)
 }
 
 if(length(goc)>49){
-plot(goc,col="blue",main=paste("Chen-Hsu"),type="l",
+plot(goc,col="blue",main=paste("Chen-Hsu",n,"fuzzy set"),type="l",
      ylim=c(min(c(goc,dubao),na.rm=1),max(c(goc,dubao),na.rm=1)),
      xlab="index",ylab="data");
 lines(dubao,col="red",type="l")
-legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),lty=c(1,1))
+legend("bottomright","(x,y)",c("ts","forecast"),col=c("blue","red"),
+lty=c(1,1),cex=1/n.dothi)
 }
 
+if(n.dothi==1){
 k.ve<-par()$yaxp
 h=(k.ve[2]-k.ve[1])/k.ve[3]
 for(i in -2:(k.ve[3]+2)) abline(h=k.ve[1]+h*i,lty=3,col="gray")
 }
+}
+}
+
+
+
 }
 #---ve bieu do du bao---
 

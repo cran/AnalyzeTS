@@ -9,11 +9,9 @@
 \packageDescription{AnalyzeTS}
 }
 \details{
-This package contains 13 functions which are used to analyze time series.
+This package contains 15 functions which are used to analyze time series.
 
 av.res function: The main function measures the accuracy of forecasted models.
-
-base.ts function: The main function calculates some basic norms for time series.
 
 Descriptives function: The main function descriptive statistics of a Time Series, a continous variable or continous variables in a data frame.
 
@@ -27,6 +25,8 @@ fuzzy.ts1 function: The main function calculates fuzziness of time series with C
 
 fuzzy.ts2 function: The main function predicts time series by fuzziness method according to Abbasov-Manedova model.
 
+fuzzy.ts3 function: The main function predicts time series by fuzziness method according to improve Abbasov-Manedova model.
+
 grid.on function: The main function using to draw grid for line graph ( graph of time series) that is drawn by plot(), ts.plot or plot.ts() function.
 
 PrintAIC function: The main function calculates and outputs AIC value for some models including ARMA, ARIMA, SARIMA, ARMAX, ARIMAX, SARIMAX, ARCH and GARCH.
@@ -35,6 +35,11 @@ SES function: The main function calculate simple exponential smoothing for a tim
 
 CMA function: The main function uses calculating  center moving average for a time series 
 
+Abbasov.Cs2 function: The main function use to find a C valua that Abbasov-Mamedova model (model corresponding for fuzzy.ts2) will achieve the least MAE value when using the C value.
+
+Abbasov.Cs3 function: The main function use to find a C valua that improve Abbasov-Mamedova model (model corresponding for fuzzy.ts3) will achieve the least MAE value when using the C value.
+
+ChenHsu.bin function: The main function use to calculating bin point values, which devece divide fuzzy sets in Chen-Hsu model.
 }
 \author{
 \packageAuthor{AnalyzeTS}
@@ -42,21 +47,10 @@ CMA function: The main function uses calculating  center moving average for a ti
 Maintainer: \packageMaintainer{AnalyzeTS}
 }
 
-\references{
-Nguyen Thi Diem My va Hong Viet Minh: Phan tich chuoi thoi gian voi su ho tro cua package AnalyzeTS.
 
-Hong Viet Minh, Luan van tot nghiep dai hoc: Phan tich so lieu thong ke voi ngon ngu R.
-
-Hong Viet Minh, Tran Thi Ngoc Han, Nguyen Thi Diem My, Mai Thi Hong Diem, Doan Hai Nghi: Phan tich chuoi thoi gian voi ngon ngu R su dung package AnalyzeTS.
-}
 
 \keyword{ package }
-\seealso{
-\code{\link{av.res}}, \code{\link{base.ts}}, \code{\link{Descriptives}},
-\code{\link{Dgroup}}, \code{\link{forecastGARCH}}, \code{\link{Frequencies}},
-\code{\link{fuzzy.ts1}}, \code{\link{fuzzy.ts2}}, \code{\link{grid.on}},
-\code{\link{PrintAIC}}, \code{\link{SES}}, \code{\link{CMA}}
-}
+
 \examples{
 library(AnalyzeTS)
 }

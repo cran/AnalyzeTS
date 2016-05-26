@@ -5,7 +5,7 @@
 Center Moving Average
 }
 \description{
-Calculate moving average by mothod of centered moving average centered.
+Calculate moving average by mothod of centered moving average.
 }
 \usage{
 CMA(x, n = 5)
@@ -21,7 +21,7 @@ Number of periods to average over.
 }
 
 \value{
-Observation series after.
+Observation series after centered moving.
 }
 
 \author{

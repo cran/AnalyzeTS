@@ -9,7 +9,7 @@ Calculates fuzziness of time series with Chen, Singh, Heuristic and Chen-Hsu.
 }
 \usage{
 fuzzy.ts1(ts, n = 5, D1 = 0, D2 = 0, type = c("Chen", "Singh","Heuristic",
-"Chen-Hsu"), bin = NULL, trace = FALSE, divide = NULL, plot = FALSE)
+"Chen-Hsu"), bin = NULL, trace = FALSE, plot = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,20 +30,14 @@ A adequate value.
 Type of model.
 }
   \item{bin}{
-  Points to divide fuzzy stes for Chen-Hsu model. If bin=NULL (default) then function will divide fuzzy sets by 'divide' parameter.
+  Point values use to divide fuzzy stes for Chen-Hsu model. If bin=NULL (default) then function just inform information about fuzzy sets.
 }
   \item{trace}{
   Let trace=TRUE to print all of calculation results out to creen.
   
   Let trace=FALSE (default) to only print fuzzy series out to creen.
 }
-  \item{divide}{
-  Method divide fuzzy set second.
   
-  Let divide="distance" to divide old fuzzy sets into smaller fuzzy sets of equal about distance.
-  
-  Let divide="density" to divide old fuzzy sets into smaller fuzzy sets of equal about density.
-}
   \item{plot}{
   Let plot=TRUE to paint graph of obsevation series and fuzzy series.
   
@@ -56,10 +50,7 @@ Type of model.
 \item{table1}{Information about fuzzy sets.}
 \item{table2}{
 Information about fuzzy series of Chen, Sing, Heuristic and Chen-Hsu models (in bin!=NUL).
-
-If type="Chen-Hsu" and bin=NULL then table2 supply information about fuzzy sets after they are second divided.
 }
-\item{table3}{Information about fuzzy series of Chen-Hsu model in bin = NULL}
 \item{accuracy}{Information about 7 accuracy of forecasting model.}
 }
 
@@ -79,12 +70,12 @@ par(mfrow=c(2,2))
 chen10<-fuzzy.ts1(lh,n=5,type="Chen",plot=TRUE)
 singh10<-fuzzy.ts1(lh,n=5,type="Singh",plot=TRUE)
 heuristic10<-fuzzy.ts1(lh,n=5,type="Heuristic",plot=TRUE)
-chen.hsu10.d<-fuzzy.ts1(lh,n=5,type="Chen-Hsu",plot=TRUE,divide="distance")
-chen.hsu10.f<-fuzzy.ts1(lh,n=5,type="Chen-Hsu",plot=TRUE,divide="density")
 
-goc<-data.frame(lh)
-mo<-data.frame(chen10,singh10,heuristic10,chen.hsu10.d,chen.hsu10.f)
-av.res(Y=goc,F=mo)
+#useing ChenHsu.bin function to find divide point fuzzy set values.
+a<-fuzzy.ts1(lh,type="Chen-Hsu",plot=1)
+b<-ChenHsu.bin(a$table1,ni=c(1,2,1,1,1))
+fuzzy.ts1(lh,type="Chen-Hsu",bin=b,plot=1,trace=1)
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
