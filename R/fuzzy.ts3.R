@@ -1,318 +1,256 @@
 fuzzy.ts3 <-
-function (ts, n = 7, w = 7, D1 = 0, D2 = 0, 
-C = NULL,forecast = 5,fty=c("ts","f"),trace=FALSE,plot=FALSE){
-
-fty<-match.arg(fty)
-
-if(fty!="ts" & fty!="f")stop("Error in 'fty'!")
-
-if(fty=="ts")
+function (ts, n = 7, w = 7, D1 = 0, D2 = 0, C = NULL, forecast = 5, 
+    fty = c("ts", "f"), trace = FALSE, plot = FALSE) 
 {
-#is.wholenumber function
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - round(x)) < tol
-  
-#computeVt function
-computeVt <- function(matrixVt, fuzzyset, w) {
-
-n <- (dim(matrixVt)[1] - w)
-cot <- dim(matrixVt)[2]
-Vt <- 1:dim(matrixVt)[1]
-Vt[1:w] <- NA
-
-for (i in 1:n) {
-O <- matrixVt[i:(w - 1 + (i - 1)), ]
-if (w == 2) O <- t(as.matrix(O))
-
-K <- matrixVt[w + (i - 1), ]
-R <- O
-for (i1 in 1:cot) 
-for (j1 in 1:(w - 1)) 
-if (O[j1,i1] > K[i1]) 
-R[j1, i1] <- K[i1]
-            
-F <- 1:cot
-for (i2 in 1:cot)
-F[i2] <- max(R[, i2])
-
-Vt[w + i] <- sum(F * fuzzyset$Bw)/sum(F)
-}
-
-Vt
-}
-
-#computeVt2 function
-computeVt2 <- function(matrixVt2, fuzzyset,w){
-cot <- dim(matrixVt2)[2]
-dong <- (dim(matrixVt2)[1] - 1)
-O <- matrixVt2[1:dong, ]
-if (w == 2) 
-O <- t(as.matrix(O))
-K <- matrixVt2[(dong + 1), ]
-R <- O
-for (i1 in 1:cot) 
-for (j1 in 1:(w - 1)) 
-if (O[j1, i1] > K[i1]) R[j1, i1] <- K[i1]
-
-F <- 1:cot
-for (i2 in 1:cot) F[i2] <- max(R[, i2])
-        
-Vt2 <- sum(F * fuzzyset$Bw)/sum(F)
-Vt2
-}
-
- 
-#test all variables
-if(!is.numeric(ts)) stop("Error in 'ts'!")
-if(sum(is.na(ts)*1)>1) stop("Time series contain 'NA value'!")
-if (length(n)>1 | is.na(n) | !is.numeric(n) | n < 1 | !is.wholenumber(n)) stop("Error in 'n'!")
-if (length(w)>1 | is.null(w) | is.na(w) | !is.numeric(w) | w < 2 | !is.wholenumber(w) | w > length(ts)) stop("Error in 'w'!")
-if (length(D1)>1 | is.na(D1) | !is.numeric(D1)) stop("Error in 'D1'!")
-if (length(D2)>1 | is.na(D2) | !is.numeric(D2)) stop("Error in 'D2'!")
-if (!is.numeric(C)) stop("Error in 'C'!")
-
-#abbasov fuzzy sets
-ts1 <- as.vector(diff(ts))
-min.x = min(ts1) - D1
-max.x = max(ts1) + D2
-h = (max.x - min.x)/n
-k <- 1:(n + 1)
-U <- 1:n
-for (i in 1:(n + 1)) {
-if (i == 1) 
-k[i] = min.x
-else {
-k[i] = min.x + (i - 1) * h
-U[i - 1] = paste("u", i - 1, sep = "")
-}
-}
-D <- data.frame(U, low = k[1:n], up = k[2:(n + 1)])
-D$Bw <- (1/2) * (D$low + D$up)
-table1 <- D
-    
-#my.At matrix
-MATRIX <- matrix(1:(length(ts1) * n), ncol = n)
-for (i in 1:length(ts1)) {
-for (j in 1:n) {
-my.At <- 1/(1 + (C * (ts1[i] - D$Bw[j]))^2)
-MATRIX[i, j] <- my.At
-}
-}
-
-V <- computeVt(MATRIX, table1, w)#Toc do tang dan so, khong co nam cuoi
-N <- ts[-length(ts)] + V #Dan so du bao, khong co nam cuoi
-
-####----------------
-#du bao nam cuoi va tuong lai
-V.f <- 1:(forecast+1)
-N.f <- 0:(forecast+1)
-
-N.f[1] <- ts[length(ts)]
-MATRIX.f <- MATRIX[(dim(MATRIX)[1] - w + 1):dim(MATRIX)[1], ]
-
-
-for (i in 1:(forecast+1)) {
-V.f[i] <- computeVt2(MATRIX.f, table1,w)
-N.f[i + 1] <- N.f[i] + V.f[i]
-
-for (chuyen in 1:(dim(MATRIX.f)[1] - 1)) 
-MATRIX.f[chuyen, ] <- MATRIX.f[(chuyen + 1), ]
-
-for (j in 1:n) {
-my.At <- 1/(1 + (C * (V.f[i] - D$Bw[j]))^2)
-MATRIX.f[dim(MATRIX.f)[1], j] <- my.At
-}
-}
-
-N.f<-N.f[-1]
-
-Danso<-c(N,N.f)
-
-if(is.ts(ts)) Danso<-ts(Danso,start=start(ts),frequency=frequency(ts))
-
-Danso<-na.omit(Danso)
-
-Danso
-
-#Cac chi tieu sai so
-Yt<-ts
-Ft<-c(N,N.f[1])
-et<-na.omit(Yt-Ft)
-n<-length(et)
-k=2
-Yt<-Yt[(length(Yt)-n+1):length(Yt)]
-
-ME = sum(et)/n
-
-MAE = sum(abs(et))/n
-
-MPE = sum((et/Yt)*100)/n
-
-MAPE = sum((abs(et)/Yt)*100)/n
-
-MSE = sum(et*et)/n
-
-RMSE = sqrt(sum(et*et)/n)
-
-AIC = (sum(et*et)/n)*(exp((2*k)/n))
-
-accuracy<-c(ME=ME,MAE=MAE,MPE=MPE,MAPE=MAPE,MSE=MSE,RMSE=RMSE,AIC=AIC)
-
-kq<-list(timeseries=Danso,accuracy=accuracy)
-}
-
-if(fty=="f")
-{
-#is.wholenumber function
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - round(x)) < tol
-  
-#computeVt function
-computeVt <- function(matrixVt, fuzzyset, w) {
-
-n <- (dim(matrixVt)[1] - w)
-cot <- dim(matrixVt)[2]
-Vt <- 1:dim(matrixVt)[1]
-Vt[1:w] <- NA
-
-for (i in 1:n) {
-O <- matrixVt[i:(w - 1 + (i - 1)), ]
-if (w == 2) O <- t(as.matrix(O))
-
-K <- matrixVt[w + (i - 1), ]
-R <- O
-for (i1 in 1:cot) 
-for (j1 in 1:(w - 1)) 
-if (O[j1,i1] > K[i1]) 
-R[j1, i1] <- K[i1]
-            
-F <- 1:cot
-for (i2 in 1:cot)
-F[i2] <- max(R[, i2])
-
-Vt[w + i] <- sum(F * fuzzyset$Bw)/sum(F)
-}
-
-Vt
-}
-
-#computeVt2 function
-computeVt2 <- function(matrixVt2, fuzzyset,w){
-cot <- dim(matrixVt2)[2]
-dong <- (dim(matrixVt2)[1] - 1)
-O <- matrixVt2[1:dong, ]
-if (w == 2) 
-O <- t(as.matrix(O))
-K <- matrixVt2[(dong + 1), ]
-R <- O
-for (i1 in 1:cot) 
-for (j1 in 1:(w - 1)) 
-if (O[j1, i1] > K[i1]) R[j1, i1] <- K[i1]
-
-F <- 1:cot
-for (i2 in 1:cot) F[i2] <- max(R[, i2])
-        
-Vt2 <- sum(F * fuzzyset$Bw)/sum(F)
-Vt2
-}
-
- 
-#test all variables
-if(!is.numeric(ts)) stop("Error in 'ts'!")
-if(sum(is.na(ts)*1)>1) stop("Time series contain 'NA value'!")
-if (length(n)>1 | is.na(n) | !is.numeric(n) | n < 1 | !is.wholenumber(n)) stop("Error in 'n'!")
-if (length(w)>1 | is.null(w) | is.na(w) | !is.numeric(w) | w < 2 | !is.wholenumber(w) | w > length(ts)) stop("Error in 'w'!")
-if (length(D1)>1 | is.na(D1) | !is.numeric(D1)) stop("Error in 'D1'!")
-if (length(D2)>1 | is.na(D2) | !is.numeric(D2)) stop("Error in 'D2'!")
-if (!is.numeric(C)) stop("Error in 'C'!")
-
-#abbasov fuzzy sets
-ts1 <- as.vector(diff(ts))
-min.x = min(ts1) - D1
-max.x = max(ts1) + D2
-h = (max.x - min.x)/n
-k <- 1:(n + 1)
-U <- 1:n
-for (i in 1:(n + 1)) {
-if (i == 1) 
-k[i] = min.x
-else {
-k[i] = min.x + (i - 1) * h
-U[i - 1] = paste("u", i - 1, sep = "")
-}
-}
-D <- data.frame(U, low = k[1:n], up = k[2:(n + 1)])
-D$Bw <- (1/2) * (D$low + D$up)
-table1 <- D
-    
-#my.At matrix
-MATRIX <- matrix(1:(length(ts1) * n), ncol = n)
-for (i in 1:length(ts1)) {
-for (j in 1:n) {
-my.At <- 1/(1 + (C * (ts1[i] - D$Bw[j]))^2)
-MATRIX[i, j] <- my.At
-}
-}
-
-V <- computeVt(MATRIX, table1, w)#Toc do tang dan so, khong co nam cuoi
-N <- ts[-length(ts)] + V #Dan so du bao, khong co nam cuoi
-
-####----------------
-#du bao nam cuoi va tuong lai
-V.f <- 1:(forecast+1)
-N.f <- 0:(forecast+1)
-
-N.f[1] <- N[length(N)]
-MATRIX.f <- MATRIX[(dim(MATRIX)[1] - w + 1):dim(MATRIX)[1], ]
-
-
-for (i in 1:(forecast+1)) {
-V.f[i] <- computeVt2(MATRIX.f, table1,w)
-N.f[i + 1] <- N.f[i] + V.f[i]
-
-for (chuyen in 1:(dim(MATRIX.f)[1] - 1)) 
-MATRIX.f[chuyen, ] <- MATRIX.f[(chuyen + 1), ]
-
-for (j in 1:n) {
-my.At <- 1/(1 + (C * (V.f[i] - D$Bw[j]))^2)
-MATRIX.f[dim(MATRIX.f)[1], j] <- my.At
-}
-}
-
-N.f<-N.f[-1]
-
-Danso<-c(N,N.f)
-
-if(is.ts(ts)) Danso<-ts(Danso,start=start(ts),frequency=frequency(ts))
-
-Danso<-na.omit(Danso)
-
-Danso
-
-#Cac chi tieu sai so
-Yt<-ts
-Ft<-c(N,N.f[1])
-et<-na.omit(Yt-Ft)
-n<-length(et)
-Yt<-ts[(length(ts)-n+1):length(ts)]
-k=2
-
-ME = sum(et)/n
-
-MAE = sum(abs(et))/n
-
-MPE = sum((et/Yt)*100)/n
-
-MAPE = sum((abs(et)/Yt)*100)/n
-
-MSE = sum(et*et)/n
-
-RMSE = sqrt(sum(et*et)/n)
-
-AIC = (sum(et*et)/n)*(exp((2*k)/n))
-
-accuracy<-c(ME=ME,MAE=MAE,MPE=MPE,MAPE=MAPE,MSE=MSE,RMSE=RMSE,AIC=AIC)
-
-kq<-list(timeseries=Danso,accuracy=accuracy)
-}
-
-kq
+    is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
+        round(x)) < tol
+    namthang <- function(data.ts) {
+        batdau <- start(data.ts)
+        tanso <- frequency(data.ts)
+        nam1 <- batdau[1]
+        thang1 <- batdau[2]
+        ketthuc <- end(data.ts)
+        nam2 <- ketthuc[1]
+        thang2 <- ketthuc[2]
+        namkq <- 1:length(data.ts)
+        thangkq <- 1:length(data.ts)
+        index = 0
+        for (nam in nam1:nam2) for (thang in 1:tanso) if (nam != 
+            nam1 || thang >= thang1) {
+            index = index + 1
+            namkq[index] <- nam
+            thangkq[index] <- thang
+            if (nam == nam2 & thang == thang2) 
+                break
+        }
+        if (tanso == 4) {
+            thangkq[thangkq == 1] <- "Q1"
+            thangkq[thangkq == 2] <- "Q1"
+            thangkq[thangkq == 3] <- "Q1"
+            thangkq[thangkq == 4] <- "Q1"
+            print <- paste(namkq, thangkq, sep = " ")
+        }
+        else if (tanso == 12) {
+            thangkq[thangkq == 1] <- "Jan"
+            thangkq[thangkq == 2] <- "Feb"
+            thangkq[thangkq == 3] <- "Mar"
+            thangkq[thangkq == 4] <- "Apr"
+            thangkq[thangkq == 5] <- "May"
+            thangkq[thangkq == 6] <- "Jun"
+            thangkq[thangkq == 7] <- "Jul"
+            thangkq[thangkq == 8] <- "Aug"
+            thangkq[thangkq == 9] <- "Sep"
+            thangkq[thangkq == 10] <- "Oct"
+            thangkq[thangkq == 11] <- "Nov"
+            thangkq[thangkq == 12] <- "Dec"
+            print <- paste(namkq, thangkq, sep = " ")
+        }
+        else if (tanso == 7) {
+            thangkq[thangkq == 1] <- "Mon"
+            thangkq[thangkq == 2] <- "Tue"
+            thangkq[thangkq == 3] <- "Wed"
+            thangkq[thangkq == 4] <- "Thu"
+            thangkq[thangkq == 5] <- "Fri"
+            thangkq[thangkq == 6] <- "Sat"
+            thangkq[thangkq == 7] <- "Sun"
+            print <- paste(namkq, thangkq, sep = " ")
+        }
+        else if (tanso != 1) 
+            print <- paste("(", namkq, ",", thangkq, ")", sep = "")
+        else print <- namkq
+        print
+    }
+    computeVt <- function(matrixVt, fuzzyset, w) {
+        n <- (dim(matrixVt)[1] - w)
+        cot <- dim(matrixVt)[2]
+        Vt <- 1:dim(matrixVt)[1]
+        Vt[1:w] <- NA
+        for (i in 1:n) {
+            O <- matrixVt[i:(w - 1 + (i - 1)), ]
+            if (w == 2) 
+                O <- t(as.matrix(O))
+            K <- matrixVt[w + (i - 1), ]
+            R <- O
+            for (i1 in 1:cot) for (j1 in 1:(w - 1)) if (O[j1, 
+                i1] > K[i1]) 
+                R[j1, i1] <- K[i1]
+            F <- 1:cot
+            for (i2 in 1:cot) F[i2] <- max(R[, i2])
+            Vt[w + i] <- sum(F * fuzzyset$Bw)/sum(F)
+        }
+        Vt
+    }
+    computeVt2 <- function(matrixVt2, fuzzyset, w) {
+        cot <- dim(matrixVt2)[2]
+        dong <- (dim(matrixVt2)[1] - 1)
+        O <- matrixVt2[1:dong, ]
+        if (w == 2) 
+            O <- t(as.matrix(O))
+        K <- matrixVt2[(dong + 1), ]
+        R <- O
+        for (i1 in 1:cot) for (j1 in 1:(w - 1)) if (O[j1, i1] > 
+            K[i1]) 
+            R[j1, i1] <- K[i1]
+        F <- 1:cot
+        for (i2 in 1:cot) F[i2] <- max(R[, i2])
+        Vt2 <- sum(F * fuzzyset$Bw)/sum(F)
+        Vt2
+    }
+    if (!is.numeric(ts)) 
+        stop("Error in 'ts'!")
+    if (sum(is.na(ts) * 1) > 1) 
+        stop("Time series contain 'NA value'!")
+    if (length(n) > 1 | is.na(n) | !is.numeric(n) | n < 1 | !is.wholenumber(n)) 
+        stop("Error in 'n'!")
+    if (length(w) > 1 | is.null(w) | is.na(w) | !is.numeric(w) | 
+        w < 2 | !is.wholenumber(w) | w > length(ts)) 
+        stop("Error in 'w'!")
+    if (length(D1) > 1 | is.na(D1) | !is.numeric(D1)) 
+        stop("Error in 'D1'!")
+    if (length(D2) > 1 | is.na(D2) | !is.numeric(D2)) 
+        stop("Error in 'D2'!")
+    if (!is.numeric(C)) 
+        stop("Error in 'C'!")
+    fty <- match.arg(fty)
+    if (fty != "ts" & fty != "f") 
+        stop("Error in 'fty'!")
+    if (plot != 0 & plot != 1) 
+        stop("Error in 'plot'!")
+    if (trace != 0 & trace != 1) 
+        stop("Error in 'trace'!")
+    ts1 <- as.vector(diff(ts))
+    min.x = min(ts1) - D1
+    max.x = max(ts1) + D2
+    h = (max.x - min.x)/n
+    k <- 1:(n + 1)
+    U <- 1:n
+    for (i in 1:(n + 1)) {
+        if (i == 1) 
+            k[i] = min.x
+        else {
+            k[i] = min.x + (i - 1) * h
+            U[i - 1] = paste("u", i - 1, sep = "")
+        }
+    }
+    D <- data.frame(U, low = k[1:n], up = k[2:(n + 1)])
+    D$Bw <- (1/2) * (D$low + D$up)
+    table1 <- D
+    thoidiem <- namthang(ts)
+    Ai <- 1:length(ts1)
+    MATRIX <- matrix(1:(length(ts1) * n), ncol = n)
+    for (i in 1:length(ts1)) {
+        temp = ""
+        for (j in 1:n) {
+            my.At <- 1/(1 + (C * (ts1[i] - D$Bw[j]))^2)
+            MATRIX[i, j] <- my.At
+            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
+            if (j == 1) 
+                temp <- paste(temp, At.j, sep = "")
+            else temp <- paste(temp, At.j, sep = ",")
+        }
+        Ai[i] <- paste("A[", thoidiem[i + 1], "]={", temp, "}", 
+            sep = "")
+    }
+    table2 <- data.frame(point = thoidiem, ts = ts, diff.ts = c(NA, 
+        ts1))
+    table3 <- c(NA, Ai)
+    V <- computeVt(MATRIX, table1, w)
+    N <- ts[-length(ts)] + V
+    V <- c(NA, V)
+    N <- c(N, NA)
+    table4 <- data.frame(point = thoidiem, interpolate = N, diff.interpolate = V)
+    V.f <- 1:(forecast + 1)
+    N.f <- 0:(forecast + 1)
+    Ai.f <- 1:(forecast + 1)
+    if (fty == "ts") 
+        N.f[1] <- ts[length(ts)]
+    if (fty == "f") 
+        N.f[1] <- N[length(N) - 1]
+    MATRIX.f <- MATRIX[(dim(MATRIX)[1] - w + 1):dim(MATRIX)[1], 
+        ]
+    temp <- c(as.vector(ts), 1:(forecast + 1))
+    temp <- ts(temp, start = start(ts), frequency = frequency(ts))
+    temp <- namthang(temp)
+    temp <- temp[(length(ts) + 1):length(temp)]
+    thoidiem <- temp
+    for (i in 1:(forecast + 1)) {
+        V.f[i] <- computeVt2(MATRIX.f, table1, w)
+        N.f[i + 1] <- N.f[i] + V.f[i]
+        for (chuyen in 1:(dim(MATRIX.f)[1] - 1)) MATRIX.f[chuyen, 
+            ] <- MATRIX.f[(chuyen + 1), ]
+        temp = ""
+        for (j in 1:n) {
+            my.At <- 1/(1 + (C * (V.f[i] - D$Bw[j]))^2)
+            MATRIX.f[dim(MATRIX.f)[1], j] <- my.At
+            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
+            if (j == 1) 
+                temp <- paste(temp, At.j, sep = "")
+            else temp <- paste(temp, At.j, sep = ",")
+        }
+        Ai.f[i] <- paste("A[", thoidiem[i], "]={", temp, "}", 
+            sep = "")
+    }
+    N.f <- N.f[-1]
+    N[length(N)] <- N.f[1]
+    N.f <- N.f[-1]
+    table4$interpolate[dim(table4)[1]] <- N[length(N)]
+    N.f.temp <- c(N.f, NA)
+    table4 <- table4[(sum(is.na(table4$interpolate)) + 1):dim(table4)[1], 
+        ]
+    table5 <- data.frame(point = thoidiem, forecast = N.f.temp, 
+        diff.forecast = V.f)
+    table6 <- Ai.f
+    Danso <- c(N, N.f)
+    if (is.ts(ts)) 
+        Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
+    Danso <- na.omit(Danso)
+    Yt <- ts
+    Ft <- N
+    et <- na.omit(Yt - Ft)
+    ne <- length(et)
+    Yt <- Yt[(length(Yt) - ne + 1):length(Yt)]
+    ME = sum(et)/ne
+    MAE = sum(abs(et))/ne
+    MPE = sum((et/Yt) * 100)/ne
+    MAPE = sum((abs(et)/Yt) * 100)/ne
+    MSE = sum(et * et)/ne
+    RMSE = sqrt(sum(et * et)/ne)
+    accuracy <- c(ME = ME, MAE = MAE, MPE = MPE, MAPE = MAPE, 
+        MSE = MSE, RMSE = RMSE)
+    KQ1 <- list(type = "Improve Abbasov-Manedova", table1 = table1, 
+        table2 = table2, table3 = table3, table4 = table4, table5 = table5, 
+        table6 = table6, accuracy = accuracy)
+    KQ2 <- list(timeseries = Danso, accuracy = accuracy)
+    if (trace == 1) 
+        MO <- KQ1
+    else MO <- KQ2
+    if (plot == TRUE) {
+        n.dothi <- prod(par()$mfrow)
+        n.dothi
+        goc <- ts
+        dubao <- Danso
+        if (length(goc) < 50) {
+            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "o", 
+                pch = c(16, 18), xlab = "index", ylab = "data", 
+                main = paste("Improve Abbasov-Mamedova Version 1: \nC =", 
+                  C, ", w =", w, ", n =", n, ", fty =", fty)))
+            legend("bottomright", "(x,y)", c("ts", "forecast"), 
+                col = c("blue", "red"), lty = c(1, 1), pch = c(16, 
+                  18), cex = 1/n.dothi)
+        }
+        if (length(goc) > 49) {
+            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "l", 
+                xlab = "index", ylab = "data", main = paste("Improve Abbasov-Mamedova Version 1: \nC =", 
+                  C, ", w =", w, ", n =", n, ", fty =", fty)))
+            legend("bottomright", "(x,y)", c("ts", "forecast"), 
+                col = c("blue", "red"), lty = c(1, 1), cex = 1/n.dothi)
+        }
+        if (n.dothi == 1) {
+            k.ve <- par()$yaxp
+            h = (k.ve[2] - k.ve[1])/k.ve[3]
+            for (i in -2:(k.ve[3] + 2)) abline(h = k.ve[1] + 
+                h * i, lty = 3, col = "gray")
+        }
+    }
+    MO
 }

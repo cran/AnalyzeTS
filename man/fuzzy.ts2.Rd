@@ -2,7 +2,7 @@
 \alias{fuzzy.ts2}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Fuzzy Times Series 2
+Abbasov Mamedova model
 }
 \description{
 Predicts time series by fuzziness method according to Abbasov-Manedova model.
@@ -44,9 +44,9 @@ Number of points to forecast in future.
  Let plot=FLASE (default) to do not paint graph.
  }
   \item{fty}{
-fty="f", forecasting timeseries of furetrue are counted from forecast timeseries of past.
+fty="f", N(length(ts)+1) = N(length(ts)) + V(length(ts)+1).
 
-fty="ts", forecasting timeseries of furetrue are counted from observation timeseries of past.
+fty="ts", N(length(ts)+1) = ts(length(ts)) + V(length(ts)+1).
 }
 }
 
@@ -59,11 +59,11 @@ fty="ts", forecasting timeseries of furetrue are counted from observation timese
 \item{table5}{Forecasting values.}
 \item{table6}{The change fuzzy of forecasting series.}
 \item{timeseries}{Forecasting timeseries.}
-\item{accuracy}{Information about 8 accuracy of forecasting model.}
+\item{accuracy}{Information about 7 accuracy of forecasting model.}
 }
 
 \references{
-Abbasov, A.M. and Mamedova, M.H., 2003. Application of fuzzy time series to population forecasting.
+Abbasov, A.M. and Mamedova, M.H., 2003. Application of fuzzy time series to population forecasting, Proceedings of 8th Symposion on Information Technology in Urban and Spatial Planning, Vienna University of Technology, February 25-March1, 545-552.
 }
 \author{
 Doan Hai Nghi <Hainghi1426262609121094@gmail.com> 
@@ -80,9 +80,10 @@ Hong Viet Minh <hongvietminh@gmail.com>
 \code{\link{fuzzy.ts3}}
 }
 \examples{
+data(population)
 layout(1:2)
-fuzzy.ts2(lh,n=5,w=5,C=0.01,forecast=5,fty="f",trace=TRUE,plot=TRUE)
-fuzzy.ts2(lh,n=5,w=5,C=0.01,forecast=5,fty="ts",plot=TRUE)
+fuzzy.ts2(population,n=7,w=7,C=0.0001,forecast=11,fty="ts",trace=TRUE,plot=TRUE)
+fuzzy.ts2(population,n=5,w=5,C=0.01,forecast=5,fty="f",plot=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -2,10 +2,10 @@
 \alias{Abbasov.Cs2}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-The best C value for Abbasov model
+Comparing and sort Abbasov-Mamedova models
 }
 \description{
-Find a C valua that Abbasov-Mamedova model (model corresponding for fuzzy.ts2) will achieve the least MAE value when using the C value.
+Comparing and sort Abbasov-Mamedova models according ME, MAE, MPE, MAPE, MSE RMSE for C values in Cs.
 }
 \usage{
 Abbasov.Cs2(ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL)
@@ -32,9 +32,12 @@ A vector contain C values.
 }
 
 }
+\details{
+Now, this documen are updating.
+}
 
 \value{
-The best C and MAE values.
+Table comparing and sort Abbasov-Mamedova models.
 }
 
 \author{
@@ -47,7 +50,7 @@ Vo Van Tai <vvtai@ctu.edu.vn>
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{Abbasov.Cs3}}
+\code{\link{FindC2}},\code{\link{FindC3}},\code{\link{Abbasov.Cs3}}
 }
 \examples{
 Abbasov.Cs2(lh,n=5,w=7,Cs=seq(0,1,0.01))

@@ -1,6 +1,6 @@
 fuzzy.ts2 <-
-function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL, 
-    trace = FALSE, forecast = NULL, plot = FALSE,fty=c("ts","f")) 
+function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL, trace = FALSE, 
+    forecast = NULL, plot = FALSE, fty = c("ts", "f")) 
 {
     is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
         round(x)) < tol
@@ -80,7 +80,7 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
         }
         Vi
     }
-    computeVi2 <- function(M, table,w) {
+    computeVi2 <- function(M, table, w) {
         cot <- dim(M)[2]
         dong <- (dim(M)[1] - 1)
         O <- M[1:dong, ]
@@ -123,13 +123,14 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
         stop("Error in 'forecast'!")
     if (w >= length(ts)) 
         stop("Error in 'w'!")
-    fty<-match.arg(fty)
-
-    if(fty!="ts" & fty!="f")stop("Error in 'fty'!")
-
-    #Phan tich
+    fty <- match.arg(fty)
+    if (fty != "ts" & fty != "f") 
+        stop("Error in 'fty'!")
+    if (plot != 0 & plot != 1) 
+        stop("Error in 'plot'!")
+    if (trace != 0 & trace != 1) 
+        stop("Error in 'plot'!")
     ts1 <- as.vector(diff(ts))
-   
     min.x = min(ts1) - D1
     max.x = max(ts1) + D2
     h = (max.x - min.x)/n
@@ -154,8 +155,7 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
         for (j in 1:n) {
             my.At <- 1/(1 + (C * (ts1[i] - D$Bw[j]))^2)
             MATRIX[i, j] <- my.At
-            At.j <- paste("(", my.At, "/u", j, sep = "", 
-                ")")
+            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
             if (j == 1) 
                 temp <- paste(temp, At.j, sep = "")
             else temp <- paste(temp, At.j, sep = ",")
@@ -168,33 +168,20 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
     table3 <- c(NA, Ai)
     V <- computeVi(MATRIX, table1, w)
     N <- c(NA, (ts[-length(ts)] + V))
-    #them sau nay
-    danso1<-N
+    danso1 <- N
     V <- c(NA, V)
     table4 <- data.frame(point = thoidiem, interpolate = N, diff.interpolate = V)
-    
-
-   accuracy <- av.res(Y = data.frame(ts), F = data.frame(Abbasov.Mamedova = table4[, 
+    accuracy <- av.res(Y = data.frame(ts), F = data.frame(Abbasov.Mamedova = table4[, 
         2]))
-   
-   et.aic<-na.omit(ts-table4[,2])
-   k.aic=2
-   AIC = (sum(et.aic*et.aic)/length(et.aic))*(exp((2*k.aic)/length(et.aic)))
-   accuracy<-cbind(accuracy,AIC)
-
     table4 <- na.omit(table4)
     rownames(table4) <- c(1:dim(table4)[1])
-
-   #du bao
     V <- 1:forecast
     N <- 0:forecast
     Ai <- 1:forecast
-
-    if(fty=="f") N[1] <- table4[dim(table4)[1], 2]
-    if(fty=="ts") N[1] <- ts[length(ts)]
-
-
-
+    if (fty == "f") 
+        N[1] <- table4[dim(table4)[1], 2]
+    if (fty == "ts") 
+        N[1] <- ts[length(ts)]
     MT <- MATRIX[(dim(MATRIX)[1] - w + 1):dim(MATRIX)[1], ]
     temp <- c(as.vector(ts), 1:forecast)
     temp <- ts(temp, start = start(ts), frequency = frequency(ts))
@@ -202,7 +189,7 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
     temp <- temp[(length(ts) + 1):length(temp)]
     thoidiem <- temp
     for (i in 1:forecast) {
-        V[i] <- computeVi2(MT, table1,w)
+        V[i] <- computeVi2(MT, table1, w)
         N[i + 1] <- N[i] + V[i]
         for (chuyen in 1:(dim(MT)[1] - 1)) MT[chuyen, ] <- MT[(chuyen + 
             1), ]
@@ -210,8 +197,7 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
         for (j in 1:n) {
             my.At <- 1/(1 + (C * (V[i] - D$Bw[j]))^2)
             MT[dim(MT)[1], j] <- my.At
-            At.j <- paste("(", my.At, "/u", j, sep = "", 
-                ")")
+            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
             if (j == 1) 
                 temp <- paste(temp, At.j, sep = "")
             else temp <- paste(temp, At.j, sep = ",")
@@ -219,8 +205,7 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
         Ai[i] <- paste("A[", thoidiem[i], "]={", temp, "}", sep = "")
     }
     N <- N[-1]
-   #them sau nay
-    danso2<-N
+    danso2 <- N
     table5 <- data.frame(point = thoidiem, forecast = N, diff.forecast = V)
     table6 <- Ai
     KQ <- list(type = "Abbasov-Manedova", table1 = table1, table2 = table2, 
@@ -228,46 +213,44 @@ function (ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL,
         accuracy = accuracy)
     if (trace == TRUE) 
         MO <- KQ
-    else if (trace == FALSE){
-    Danso<-c(danso1,danso2)
-    if(is.ts(ts)) Danso<-ts(Danso,start=start(ts),frequency=frequency(ts))
-    Danso<-na.omit(Danso)
-    MO<-list(timeseries=Danso,accuracy=accuracy)
-    
+    else if (trace == FALSE) {
+        Danso <- c(danso1, danso2)
+        if (is.ts(ts)) 
+            Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
+        Danso <- na.omit(Danso)
+        MO <- list(timeseries = Danso, accuracy = accuracy)
     }
     else MO <- c("'trace' must be 'TRUE' or 'FALSE'")
     if (plot == TRUE) {
         goc <- ts
-        Danso<-c(danso1,danso2)
-        if(is.ts(ts)) Danso<-ts(Danso,start=start(ts),frequency=frequency(ts))
-        dubao<-na.omit(Danso)
-       
-        n.dothi<-prod(par()$mfrow)
-        n.dothi 
-
+        Danso <- c(danso1, danso2)
+        if (is.ts(ts)) 
+            Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
+        dubao <- na.omit(Danso)
+        n.dothi <- prod(par()$mfrow)
+        n.dothi
         if (length(goc) < 50) {
-        ts.plot(goc, dubao,col=c("blue","red"), gpars=list(type="o",
-        pch=c(16,18),xlab = "index", ylab = "data",main = paste("Abbasov-Mamedova: 
-        C =", C, ", w =", w, ", n =", n,", fty =",fty)))
-
-        legend("bottomright", "(x,y)", c("ts", "forecast"), 
+            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "o", 
+                pch = c(16, 18), xlab = "index", ylab = "data", 
+                main = paste("Abbasov-Mamedova: \n        C =", 
+                  C, ", w =", w, ", n =", n, ", fty =", fty)))
+            legend("bottomright", "(x,y)", c("ts", "forecast"), 
                 col = c("blue", "red"), lty = c(1, 1), pch = c(16, 
-                  18),cex=1/n.dothi)
+                  18), cex = 1/n.dothi)
         }
         if (length(goc) > 49) {
-  ts.plot(goc, dubao,col=c("blue","red"), gpars=list(type="l",
-        xlab = "index", ylab = "data",main = paste("Abbasov-Mamedova: 
-        C =", C, ", w =", w, ", n =", n, ", fty =",fty)))
-
-        legend("bottomright", "(x,y)", c("ts", "forecast"), 
-        col = c("blue", "red"), lty = c(1, 1),cex=1/n.dothi)
+            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "l", 
+                xlab = "index", ylab = "data", main = paste("Abbasov-Mamedova: \n        C =", 
+                  C, ", w =", w, ", n =", n, ", fty =", fty)))
+            legend("bottomright", "(x,y)", c("ts", "forecast"), 
+                col = c("blue", "red"), lty = c(1, 1), cex = 1/n.dothi)
         }
-        
-        if(n.dothi==1){
-        k.ve <- par()$yaxp
-        h = (k.ve[2] - k.ve[1])/k.ve[3]
-        for (i in -2:(k.ve[3] + 2)) abline(h = k.ve[1] + h * 
-            i, lty = 3, col = "gray")}
+        if (n.dothi == 1) {
+            k.ve <- par()$yaxp
+            h = (k.ve[2] - k.ve[1])/k.ve[3]
+            for (i in -2:(k.ve[3] + 2)) abline(h = k.ve[1] + 
+                h * i, lty = 3, col = "gray")
+        }
     }
     MO
 }

@@ -2,7 +2,7 @@
 \alias{fuzzy.ts1}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Fuzzy Times Series 1
+Chen, Sing, Heuristic and Chen-Hsu models
 }
 \description{
 Calculates fuzziness of time series with Chen, Singh, Heuristic and Chen-Hsu.
@@ -53,7 +53,15 @@ Information about fuzzy series of Chen, Sing, Heuristic and Chen-Hsu models (in 
 }
 \item{accuracy}{Information about 7 accuracy of forecasting model.}
 }
+\references{
+Chen, S.M., 1996. Forecasting  enrollments  based  on  fuzzy  time  series. Fuzzy Sets  and Systems. 81: 311-319. 
 
+Chen, S.M. and Hsu, C.C., 2004. A New method to forecast enrollments using fuzzy time series. International Journal of Applied Science and Engineering, 12: 234-244.
+
+Huarng, H., 2001. Huarng models of fuzzy time series for forecasting. Fuzzy Sets and Systems. 123: 369-386.
+
+Singh, S.R., 2008. A computational method of forecasting based on fuzzy time series.   Mathematics and Computers in Simulation. 79: 539-554
+}
 \author{
 Doan Hai Nghi <Hainghi1426262609121094@gmail.com> 
 
@@ -73,7 +81,7 @@ heuristic10<-fuzzy.ts1(lh,n=5,type="Heuristic",plot=TRUE)
 
 #useing ChenHsu.bin function to find divide point fuzzy set values.
 a<-fuzzy.ts1(lh,type="Chen-Hsu",plot=1)
-b<-ChenHsu.bin(a$table1,ni=c(1,2,1,1,1))
+b<-ChenHsu.bin(a$table1,n.subset=c(1,2,1,1,1))
 fuzzy.ts1(lh,type="Chen-Hsu",bin=b,plot=1,trace=1)
 
 }

@@ -29,7 +29,7 @@ Descriptives(x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
   Form of answers are returned. Let answer=1 or answer=2 (default 1)
 }
   \item{statistic}{
-  A list contain descriptive statistic values that user want R print screen (default ALL).
+A list contain descriptive statistic values that user want R print screen (default ALL).
 }
 }
 \details{

@@ -2,9 +2,10 @@
 \alias{Abbasov.Cs3}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-The best C value for improve Abbasov model}
+Comparing and sort Improve Abbasov-Mamedova version 1 models
+}
 \description{
-Find a C valua that improve Abbasov-Mamedova model (model corresponding for fuzzy.ts3) will achieve the least MAE value when using the C value.
+Comparing and sort Improve Abbasov-Mamedova version 1 models according ME, MAE, MPE, MAPE, MSE RMSE for C values in Cs.
 }
 \usage{
 Abbasov.Cs3(ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, fty = c("ts", "f"))
@@ -30,14 +31,20 @@ A adequate value.
 A vector contain C values.
 }
  \item{fty}{
-fty="f", forecasting timeseries of furetrue are counted from forecast timeseries of past.
-
-fty="ts", forecasting timeseries of furetrue are counted from observation timeseries of past.
+A character string specifying the focasting of Improve Abbasov Mamedova version 1 model, must be one of "ts" (default), or "f". You can specify just the initial letter.
 }
+ 
+
 }
 
+
+\details{
+fty="f", N(length(ts)) = N(length(ts)-1) + V(length(ts)+1).
+
+fty="ts", N(length(ts)) = ts(length(ts)) + V(length(ts)+1).
+}
 \value{
-The best C and MAE values.
+Table comparing and sort Improve Abbasov-Mamedova version 1 models.
 }
 
 \author{
@@ -50,7 +57,7 @@ Vo Van Tai <vvtai@ctu.edu.vn>
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{Abbasov.Cs2}}
+\code{\link{FindC2}},\code{\link{FindC3}},\code{\link{Abbasov.Cs2}}
 }
 \examples{
 Abbasov.Cs3(lh,n=5,w=7,Cs=seq(0,1,0.01),fty="ts")

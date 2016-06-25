@@ -81,38 +81,72 @@ function (Y = NULL, F = NULL, E = NULL, r = 3)
     if (zero > 0 & n > 1) 
         print("Khong the thuc hien xep loai!")
     if (zero == 0) {
-       
-        loi1=0
-        loi2=0
-        loi3=0
-        loi4=0
-        loi5=0
-        loi6=0
-        loi7=0
-
-        for(i in 1:n){
-            if (is.na(kq[1, i])) loi1 <- loi1 + 1
-            if (is.na(kq[2, i])) loi2 <- loi2 + 1
-            if (is.na(kq[3, i])) loi3 <- loi3 + 1
-            if (is.na(kq[4, i])) loi4 <- loi4 + 1
-            if (is.na(kq[5, i])) loi5 <- loi5 + 1
-            if (is.na(kq[6, i])) loi6 <- loi6 + 1
-            if (is.na(kq[7, i])) loi7 <- loi7 + 1
-        }
-
-        xl.nho <- rep(0,7)
+        loi1 = 0
+        loi2 = 0
+        loi3 = 0
+        loi4 = 0
+        loi5 = 0
+        loi6 = 0
+        loi7 = 0
         for (i in 1:n) {
-            if(loi1==0) {if (kq[1, i] == min(kq[1, ])) xl.nho[1] <- i} else xl.nho[1]<-0
-            if(loi2==0) {if (kq[2, i] == min(kq[2, ])) xl.nho[2] <- i} else xl.nho[2]<-0
-            if(loi3==0) {if (kq[3, i] == min(kq[3, ])) xl.nho[3] <- i} else xl.nho[3]<-0
-            if(loi4==0) {if (kq[4, i] == min(kq[4, ])) xl.nho[4] <- i} else xl.nho[4]<-0
-            if(loi5==0) {if (kq[5, i] == min(kq[5, ])) xl.nho[5] <- i} else xl.nho[5]<-0
-            if(loi6==0) {if (kq[6, i] == min(kq[6, ])) xl.nho[6] <- i} else xl.nho[6]<-0
-            if(loi7==0) {if (kq[7, i] == min(kq[7, ])) xl.nho[7] <- i} else xl.nho[7]<-0
+            if (is.na(kq[1, i])) 
+                loi1 <- loi1 + 1
+            if (is.na(kq[2, i])) 
+                loi2 <- loi2 + 1
+            if (is.na(kq[3, i])) 
+                loi3 <- loi3 + 1
+            if (is.na(kq[4, i])) 
+                loi4 <- loi4 + 1
+            if (is.na(kq[5, i])) 
+                loi5 <- loi5 + 1
+            if (is.na(kq[6, i])) 
+                loi6 <- loi6 + 1
+            if (is.na(kq[7, i])) 
+                loi7 <- loi7 + 1
+        }
+        xl.nho <- rep(0, 7)
+        for (i in 1:n) {
+            if (loi1 == 0) {
+                if (kq[1, i] == min(kq[1, ])) 
+                  xl.nho[1] <- i
+            }
+            else xl.nho[1] <- 0
+            if (loi2 == 0) {
+                if (kq[2, i] == min(kq[2, ])) 
+                  xl.nho[2] <- i
+            }
+            else xl.nho[2] <- 0
+            if (loi3 == 0) {
+                if (kq[3, i] == min(kq[3, ])) 
+                  xl.nho[3] <- i
+            }
+            else xl.nho[3] <- 0
+            if (loi4 == 0) {
+                if (kq[4, i] == min(kq[4, ])) 
+                  xl.nho[4] <- i
+            }
+            else xl.nho[4] <- 0
+            if (loi5 == 0) {
+                if (kq[5, i] == min(kq[5, ])) 
+                  xl.nho[5] <- i
+            }
+            else xl.nho[5] <- 0
+            if (loi6 == 0) {
+                if (kq[6, i] == min(kq[6, ])) 
+                  xl.nho[6] <- i
+            }
+            else xl.nho[6] <- 0
+            if (loi7 == 0) {
+                if (kq[7, i] == min(kq[7, ])) 
+                  xl.nho[7] <- i
+            }
+            else xl.nho[7] <- 0
         }
         kq <- round(kq, r)
         tenmh <- 1:7
-        for (ten in 1:7) if(xl.nho[ten]!=0) tenmh[ten] <- colnames(kq)[xl.nho[ten]] else tenmh[ten]<-"NA"
+        for (ten in 1:7) if (xl.nho[ten] != 0) 
+            tenmh[ten] <- colnames(kq)[xl.nho[ten]]
+        else tenmh[ten] <- "NA"
         kq <- data.frame(kq, min.model = tenmh)
     }
     if (zero == 0) 
