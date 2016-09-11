@@ -62,7 +62,4 @@ Frequencies(crabs$sp,plot=TRUE)
 #Descriptive for discrete variables
 Frequencies(crabs,answer=2,plot=TRUE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{Frequencies}
 

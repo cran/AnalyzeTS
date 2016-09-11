@@ -38,6 +38,4 @@ Before, name of this function is TTT.
 CMA(lh,n=5)
 CMA(lh,n=8)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{CMA }
+

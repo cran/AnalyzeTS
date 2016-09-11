@@ -94,7 +94,5 @@ Mon<-1*(date=="Mon")
 event<-data.frame(Mon)
 PrintAIC(coffee,order=c(2,2),xreg=event,type="ARMAX")
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{PrintAIC}
+
 

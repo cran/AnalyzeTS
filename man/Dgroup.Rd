@@ -83,6 +83,4 @@ Dgroup(coffee,r=4,follow=list(date,hk),answer=2)
 Dgroup(coffee,r=4,follow=list(hk,date),answer=1)
 Dgroup(coffee,r=4,follow=list(hk,date),answer=2)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ Dgroup }
+

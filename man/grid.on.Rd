@@ -50,7 +50,3 @@ grid.on(h=TRUE,v=FALSE)
 plot(co2)
 grid.on(col="red",nv=3)
 }
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{grid.on}

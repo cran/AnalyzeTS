@@ -2,10 +2,10 @@
 \alias{av.res}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Average residuals
+The criterion to evaluate forecasting model
 }
 \description{
-This function calculate to return answer which are 7 accuracy of forecasting models. They are ME, MAE, MPE, MAPE, MSE, RMSE and U.
+This function calculate to return answer which are 7 criterion to evaluate forecasting models. They are ME, MAE, MPE, MAPE, MSE, RMSE and U.
 }
 \usage{
 av.res(Y = NULL, F = NULL, E = NULL, r = 3)
@@ -51,6 +51,7 @@ U = sqrt(sum((Yt-Ft)*(Yt-Ft)))/sqrt((Yt-Y(t-1))*(Yt-Y(t-1)))
 \item{MSE}{Mean Square Error}
 \item{RMSE}{Root of Mean Square Error}
 \item{U}{Number Theil U}
+\item{min.model}{The best model follow a criterion to evaluate forecasting model}
 }
 \references{
 \url{http://www.tailieu.tv/tai-lieu/bai-giang-quy-trinh-du-bao-khao-sat-du-lieu-va-lua-chon-mo-hinh-22414/}
@@ -85,6 +86,4 @@ dubao<-data.frame(sma.200,ema.200,dema.200,wma.200,evwma.200,zlema.200,vwap.200)
 #Comparing forecasting models
 av.res(Y=chuoigoc,F=dubao,r=5)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{av.res}
+

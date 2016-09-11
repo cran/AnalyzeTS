@@ -33,6 +33,3 @@ a<-fuzzy.ts1(lh,type="Chen-Hsu",plot=1)
 b<-ChenHsu.bin(a$table1,n.subset=c(1,2,1,1,1))
 fuzzy.ts1(lh,type="Chen-Hsu",bin=b,plot=1,trace=1)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ChenHsu.bin }% use one of  RShowDoc("KEYWORDS")

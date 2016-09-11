@@ -78,7 +78,5 @@ fit2<-garch(res1,order=c(2,1),trace=0)
 forecastGARCH(fit1,fit2,r=6,trace=TRUE)
 forecastGARCH(fit1,fit2,r=6)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{forecastGARCH}
+
 

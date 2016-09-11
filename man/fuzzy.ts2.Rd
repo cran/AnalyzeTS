@@ -2,15 +2,16 @@
 \alias{fuzzy.ts2}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Abbasov Mamedova model
+Abbasov Mamedova model and FVD model
 }
 \description{
-Predicts time series by fuzziness method according to Abbasov-Manedova model.
+Predicts time series by fuzziness method according to Abbasov-Manedova model or FVD model.
 }
 \usage{
-fuzzy.ts2(ts, n = 5, w = NULL, D1 = 0, D2 = 0, C = NULL, trace = FALSE,
-forecast = NULL, plot = FALSE, fty = c("ts", "f"))
+fuzzy.ts2(ts, n = 7, w = 7, D1 = 0, D2 = 0, C = NULL, forecast = 5, 
+trace = FALSE, plot = FALSE, type = "Abbasov-Mamedova")
 }
+
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ts}{
@@ -43,11 +44,8 @@ Number of points to forecast in future.
   
  Let plot=FLASE (default) to do not paint graph.
  }
-  \item{fty}{
-fty="f", N(length(ts)+1) = N(length(ts)) + V(length(ts)+1).
-
-fty="ts", N(length(ts)+1) = ts(length(ts)) + V(length(ts)+1).
-}
+  \item{type}{
+Model is choosed to predicts time series by fuzziness, type = "Abbasov-Manedova" or type = "NFTS". }
 }
 
 \value{
@@ -59,7 +57,7 @@ fty="ts", N(length(ts)+1) = ts(length(ts)) + V(length(ts)+1).
 \item{table5}{Forecasting values.}
 \item{table6}{The change fuzzy of forecasting series.}
 \item{timeseries}{Forecasting timeseries.}
-\item{accuracy}{Information about 7 accuracy of forecasting model.}
+\item{accuracy}{Information about the criterion to evaluate forecasting model.}
 }
 
 \references{
@@ -76,15 +74,9 @@ Hong Viet Minh <hongvietminh@gmail.com>
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-\code{\link{fuzzy.ts3}}
-}
 \examples{
-data(population)
+data(enrollment)
 layout(1:2)
-fuzzy.ts2(population,n=7,w=7,C=0.0001,forecast=11,fty="ts",trace=TRUE,plot=TRUE)
-fuzzy.ts2(population,n=5,w=5,C=0.01,forecast=5,fty="f",plot=TRUE)
+fuzzy.ts2(enrollment,n=7,w=7,C=0.0001,forecast=11,trace=TRUE,plot=TRUE,type="NFTS")
+fuzzy.ts2(enrollment,n=5,w=5,C=0.01,forecast=5,plot=TRUE,type="Abbasov-Mamedova")
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ fuzzy.ts2 }% use one of  RShowDoc("KEYWORDS")

@@ -87,6 +87,3 @@ Descriptives(crabs,plot=list("Mean","SD"))
 #Descriptives for time series
 Descriptives(lh,plot=TRUE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{Descriptives}

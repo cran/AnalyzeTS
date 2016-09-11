@@ -51,7 +51,7 @@ Type of model.
 \item{table2}{
 Information about fuzzy series of Chen, Sing, Heuristic and Chen-Hsu models (in bin!=NUL).
 }
-\item{accuracy}{Information about 7 accuracy of forecasting model.}
+\item{accuracy}{Information about the criterion to evaluate forecasting model.}
 }
 \references{
 Chen, S.M., 1996. Forecasting  enrollments  based  on  fuzzy  time  series. Fuzzy Sets  and Systems. 81: 311-319. 
@@ -85,7 +85,5 @@ b<-ChenHsu.bin(a$table1,n.subset=c(1,2,1,1,1))
 fuzzy.ts1(lh,type="Chen-Hsu",bin=b,plot=1,trace=1)
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{fuzzy.ts1}
+
 
