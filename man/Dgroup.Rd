@@ -5,7 +5,7 @@
 Discriptives Follow Groups
 }
 \description{
-This function descriptive statistics in group for a continous variable. Usual using to statistic a time series following dates in week or months in year.
+Descriptive statistics in group for a continous variable. Usual using to statistic a time series following dates in week or months in year.
 }
 \usage{
 Dgroup(x, follow = NULL, r = 2, answer = 1, statistic = "ALL")

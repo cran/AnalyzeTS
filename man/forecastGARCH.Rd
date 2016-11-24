@@ -5,7 +5,7 @@
 Forecast GARCH Model
 }
 \description{
-This function get two object from 'Arima' class and 'garch' class, and then calculate to return forecasting answer of mean and variance of next day.
+The function get two object from 'Arima' class and 'garch' class, and then calculate to return forecasting answer of mean and variance of next day.
 }
 \usage{
 forecastGARCH(fitARMA, fitGARCH, r = 3, trace = FALSE, newxreg = NULL)
@@ -19,7 +19,7 @@ forecastGARCH(fitARMA, fitGARCH, r = 3, trace = FALSE, newxreg = NULL)
   A object from 'garch' class.
 }
   \item{r}{
- Rounds the answer to the specified number of decimal places (default 3).
+ Rounds the answer to the specified number of decimal places (default 3). (See \code{\link{round2str}} for details of r paramicter.)
 }
   \item{trace}{
   Logical. Trace optimizer output?

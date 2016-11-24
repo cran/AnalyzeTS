@@ -5,7 +5,7 @@
 Simple Exponential Smoothing
 }
 \description{
-Calculate simple exponential smoothing for a time series.
+Calculating simple exponential smoothing for a time series.
 }
 \usage{
 SES(ts, alpha = 0.5, s0 = NULL)
@@ -13,7 +13,7 @@ SES(ts, alpha = 0.5, s0 = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ts}{
-  Observation series.
+Univariate time series.
 }
   \item{alpha}{
 The smoothing parameter, 0 < alpha < 1 (default 0.5).
@@ -39,8 +39,6 @@ Hong Viet Minh <hongvietminh@gmail.com>
 \note{
 Before, name of this function is TM.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 \code{\link{CMA}}

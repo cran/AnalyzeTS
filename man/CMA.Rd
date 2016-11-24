@@ -5,7 +5,7 @@
 Center Moving Average
 }
 \description{
-Calculate moving average by mothod of centered moving average.
+Calculating moving average by mothod of centered moving average.
 }
 \usage{
 CMA(x, n = 5)
@@ -13,7 +13,7 @@ CMA(x, n = 5)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-Observation series.
+Univariate time series.
 }
   \item{n}{
 Number of periods to average over.

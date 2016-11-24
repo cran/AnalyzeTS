@@ -5,7 +5,7 @@
 Grid on
 }
 \description{
-Paint to line graph.
+Painting to line graph.
 }
 \usage{
 grid.on(h = TRUE, v = TRUE, col = "gray", nv = 1, nh = 1, lty = 3)

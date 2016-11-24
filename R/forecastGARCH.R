@@ -116,18 +116,18 @@ function (fitARMA, fitGARCH, r = 3, trace = FALSE, newxreg = NULL)
         frequency = frequency(resARMA))
     point <- namthang(ts.temp)[(length(ts.temp) - n.row):length(ts.temp)]
     kq.point <- point
-    kq.res <- c(rep(" ", (n.row - length(res))), round(res, r), 
+    kq.res <- c(rep(" ", (n.row - length(res))), as.numeric(round2str(res, r)), 
         " ")
-    kq.sq.res <- c(rep(" ", (n.row - length(res2))), round(res2, 
-        r), " ")
-    kq.ssl <- c(rep(" ", n.row), round(SSL, r))
-    kq.var <- c(rep(" ", n.row), round(Var, r))
+    kq.sq.res <- c(rep(" ", (n.row - length(res2))), as.numeric(round2str(res2, 
+        r)), " ")
+    kq.ssl <- c(rep(" ", n.row), as.numeric(round2str(SSL, r)))
+    kq.var <- c(rep(" ", n.row), as.numeric(round2str(Var, r)))
     if (vt.garch != 0) {
         var2 <- swap(var2)
         temp <- (length(var2) + 1)
         for (i in n.row:(n.row - length(cfGARCH) + 1)) {
             temp = temp - 1
-            kq.var[i] <- round(var2[temp], r)
+            kq.var[i] <- as.numeric(round(var2[temp], r))
         }
     }
     kq <- data.frame(kq.point, kq.res, kq.sq.res, kq.ssl, kq.var)

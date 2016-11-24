@@ -24,4 +24,3 @@ Singh, S.R., 2008. A computational method of forecasting based on fuzzy time ser
 data(enrollment)
 ts.plot(enrollment,col="red")
 grid.on()}
-\keyword{datasets}

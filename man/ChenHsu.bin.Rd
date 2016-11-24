@@ -2,10 +2,11 @@
 \alias{ChenHsu.bin}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Bin point valuesin Chen-Hsu model
+Devide point-bin values in Chen-Hsu model
 }
 \description{
-Calculating bin point values, which devece divide fuzzy sets in Chen-Hsu model.}
+Calculating point-bin values, which devece divide fuzzy sets in Chen-Hsu model.
+}
 \usage{
 ChenHsu.bin(table, n.subset)
 }
@@ -18,7 +19,7 @@ A vector contain fuzzy subset number in every old fuzzy set.}
 }
 
 \value{
-A vector contain bin point values.
+A vector contain point-bin values.
 }
 
 \author{
@@ -26,10 +27,9 @@ Hong Viet Minh <hongvietminh@gmail.com>
 }
 
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
+\seealso{
+\code{\link{GChenHsu.bin}} for more models at the same time.
+}
 \examples{
-a<-fuzzy.ts1(lh,type="Chen-Hsu",plot=1)
-b<-ChenHsu.bin(a$table1,n.subset=c(1,2,1,1,1))
-fuzzy.ts1(lh,type="Chen-Hsu",bin=b,plot=1,trace=1)
+#For examples see example(fuzzy.ts1)
 }

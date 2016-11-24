@@ -1,6 +1,10 @@
 av.res <-
 function (Y = NULL, F = NULL, E = NULL, r = 3) 
 {
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
+        round(x)) < tol
+    if (is.na(r) || !is.numeric(r) || r < 0 || !is.wholenumber(r) ||length(r)>1) 
+        stop("Error in 'r'!")
     if (!is.null(Y) & !is.null(F) & !is.null(E)) 
         stop("More members!")
     if (!is.null(Y) & !is.null(F)) 
@@ -79,7 +83,7 @@ function (Y = NULL, F = NULL, E = NULL, r = 3)
         for (i in 1:n) zero = zero + sum(Yt == 0)
     }
     if (zero > 0 & n > 1) 
-        print("Khong the thuc hien xep loai!")
+        warning("Unachievable ranked for models!")
     if (zero == 0) {
         loi1 = 0
         loi2 = 0
@@ -142,7 +146,7 @@ function (Y = NULL, F = NULL, E = NULL, r = 3)
             }
             else xl.nho[7] <- 0
         }
-        kq <- round(kq, r)
+        
         tenmh <- 1:7
         for (ten in 1:7) if (xl.nho[ten] != 0) 
             tenmh[ten] <- colnames(kq)[xl.nho[ten]]
@@ -155,5 +159,6 @@ function (Y = NULL, F = NULL, E = NULL, r = 3)
     if (zero > 0) 
         if (dim(kq)[2] == 1) 
             kq <- t(kq[, 1])
-    kq
+   kq[,-dim(kq)[2]] <- as.numeric(round2str(kq[,-dim(kq)[2]], r))
+   kq
 }

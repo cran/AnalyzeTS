@@ -3,11 +3,14 @@ function (DataTimeSeries, order = c(p, d = NULL, q = NULL), seas = list(order = 
     D = NULL, Q = NULL), frequency = NULL), type = NULL, xreg = NULL) 
 {
     if (is.null(type)) 
-        stop("Phai khai bao type cua mo hinh!")
+        stop("'type' must be one of  \"ARMA\", \"ARIMA\", \"SARIMA\", \"ARCH\", \"GARCH\",\"ARMAX\", \"ARIMAX\" or \"SARIMAX\"!")
+             
+  
     if (type != "ARMA" & type != "ARIMA" & type != "SARIMA" & 
         type != "ARCH" & type != "GARCH" & type != "ARMAX" & 
         type != "ARIMAX" & type != "SARIMAX") 
-        stop("Fuction PrintAIC can not comput this model!\n You should connect to Maintainer to develop\n            code for the model by gmail <hongvietminh@gmail.com>")
+        stop("Fuction PrintAIC can not comput this model!\n You should connect to Maintainer to develop\n            
+             code for the model by gmail <hongvietminh@gmail.com>")
     sona <- function(x) {
         f <- x
         f[!is.na(f)] <- 0

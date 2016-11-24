@@ -20,9 +20,6 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
         x <- na.omit(x)
         temp <- 1:11
         b <- matrix(temp, nrow = 11)
-        rownames(b) <- c("N:", "NaN:", "Min:", "1sq QU:", "Median:", 
-            "Mean:", "3rd QU:", "Max:", "VAR:", "SD:", "SE:")
-        colnames(b) <- c("x")
         b[1, 1] <- length(x)
         b[2, 1] <- na
         b[3, 1] <- min(x)
@@ -34,7 +31,10 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
         b[9, 1] <- var(x)
         b[10, 1] <- sd(x)
         b[11, 1] <- se(x)
-        KQ <- round(b, r)
+        KQ <-as.matrix(as.numeric(round2str(b, r)))
+        rownames(KQ) <- c("N:", "NaN:", "Min:", "1sq QU:", "Median:", 
+            "Mean:", "3rd QU:", "Max:", "VAR:", "SD:", "SE:")
+        colnames(KQ) <- ""
         KQ
     }
     mieuta.data.frame.so <- function(x, r) {
@@ -51,13 +51,13 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
     plotTRUE <- function(x, r = 2) {
         if (is.numeric(x)) {
             x <- na.omit(x)
-            doixung <- round(skewness(x), r)
-            nhon <- round(kurtosis(x), r)
+            doixung <- round2str(skewness(x), r)
+            nhon <- round2str(kurtosis(x), r)
             chuthich1 <- paste("Skewness: ", doixung)
             chuthich2 <- paste("Kurtosis: ", nhon)
             h <- density(x)
             par(mfrow = c(2, 2))
-            ts.plot(x, col = "blue")
+            ts.plot(x, col = "blue",main="Series x")
             hist(x, probability = TRUE, xlim = range(h$x), ylim = c(0, 
                 (max(h$y) + mean(h$y))), border = "blue")
             lines(h, col = "red")
@@ -68,12 +68,9 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
         }
         else print("Can not plot Graph!")
     }
-    is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
-        round(x)) < tol
-    if (!is.wholenumber(r)) 
-        stop("'r' must be a integer number!")
-    if (answer != 1 & answer != 2) 
+     if (answer != 1 & answer != 2) 
         stop("'answer' must be 1 or 2!")
+
     if (is.vector(x) || is.ts(x) || is.factor(x)) {
         if (!is.numeric(x)) 
             stop("You shold use Frequencies function to statistic!")
@@ -177,7 +174,9 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
                   for (solanve in 1:length(vt.ve)) {
                     ve <- as.table(statistic[vt.ve[solanve], 
                       ])
-                    number <- barplot(ve, main = rownames(statistic)[vt.ve[solanve]], 
+nhan.y<-rownames(statistic)[vt.ve[solanve]]
+nhan.y<-substr(nhan.y,1,nchar(nhan.y)-1)
+                    number <- barplot(ve, ylab = nhan.y, 
                       col = "white", border = "blue")
                     text(number, ve - ve/2, ve)
                   }

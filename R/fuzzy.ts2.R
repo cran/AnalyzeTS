@@ -1,6 +1,6 @@
 fuzzy.ts2 <-
 function (ts, n = 7, w = 7, D1 = 0, D2 = 0, C = NULL, forecast = 5, 
-trace = FALSE, plot = FALSE,type="Abbasov-Mamedova") 
+r=12,trace = FALSE, plot = FALSE,grid=FALSE,type="Abbasov-Mamedova") 
 {
 
   is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
@@ -83,9 +83,9 @@ trace = FALSE, plot = FALSE,type="Abbasov-Mamedova")
         stop("Error in 'w'!")
     if (is.null(C) || is.na(C) || !is.numeric(C)) 
         stop("Error in 'C'!")
-    if (is.na(D1) || !is.numeric(D1)) 
+    if (is.na(D1) || !is.numeric(D1)|| length(D1)>1) 
         stop("Error in 'D1'!")
-    if (is.na(D2) || !is.numeric(D2)) 
+    if (is.na(D2) || !is.numeric(D2)|| length(D2)>1) 
         stop("Error in 'D2'!")
     if (is.null(forecast) || is.na(forecast) || !is.numeric(forecast) || 
         forecast < 1 || !is.wholenumber(forecast)) 
@@ -95,6 +95,8 @@ trace = FALSE, plot = FALSE,type="Abbasov-Mamedova")
  
     if (plot != 0 & plot != 1) 
         stop("Error in 'plot'!")
+ if (is.na(r) || !is.numeric(r) || r < 0 || !is.wholenumber(r)) 
+        stop("Error in 'r'!")
     if (trace != 0 & trace != 1) 
         stop("Error in 'trace'!")
  if(type!="Abbasov-Mamedova" & type!="NFTS")stop("Error in 'type'!")
@@ -154,7 +156,7 @@ if(type=="Abbasov-Mamedova")
             U[i - 1] = paste("u", i - 1, sep = "")
         }
     }
-    D <- data.frame(U, low = k[1:n], up = k[2:(n + 1)])
+    D <- data.frame(set=U, low = k[1:n], up = k[2:(n + 1)])
     D$Bw <- (1/2) * (D$low + D$up)
     table1 <- D
     thoidiem <- namthang(ts)
@@ -165,7 +167,7 @@ if(type=="Abbasov-Mamedova")
         for (j in 1:n) {
             my.At <- 1/(1 + (C * (ts1[i] - D$Bw[j]))^2)
             MATRIX[i, j] <- my.At
-            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
+            At.j <- paste("(", round2str(my.At,r), "/u", j, sep = "", ")")
             if (j == 1) 
                 temp <- paste(temp, At.j, sep = "")
             else temp <- paste(temp, At.j, sep = ",")
@@ -206,7 +208,7 @@ if(type=="Abbasov-Mamedova")
         for (j in 1:n) {
             my.At <- 1/(1 + (C * (V[i] - D$Bw[j]))^2)
             MT[dim(MT)[1], j] <- my.At
-            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
+            At.j <- paste("(", round2str(my.At,r), "/u", j, sep = "", ")")
             if (j == 1) 
                 temp <- paste(temp, At.j, sep = "")
             else temp <- paste(temp, At.j, sep = ",")
@@ -217,50 +219,23 @@ if(type=="Abbasov-Mamedova")
     danso2 <- N
     table5 <- data.frame(point = thoidiem, forecast = N, diff.forecast = V)
     table6 <- Ai
+    colnames(table1)<-c("set","dow","up","mid")
     KQ <- list(type = "Abbasov-Manedova model", table1 = table1, table2 = table2, 
         table3 = table3, table4 = table4, table5 = table5, table6 = table6, 
         accuracy = accuracy)
+ Danso <- c(danso1, danso2)
+        if (is.ts(ts)){ 
+            Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
+danso1<-ts(danso1, start = start(Danso), frequency = frequency(Danso))
+danso2<-ts(danso2, end = end(Danso), frequency = frequency(Danso))
+}    
     if (trace == TRUE) 
         MO <- KQ
-    else if (trace == FALSE) {
-        Danso <- c(danso1, danso2)
-        if (is.ts(ts)) 
-            Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
-        Danso <- na.omit(Danso)
-        MO <- list(timeseries = Danso, accuracy = accuracy)
+    else if (trace == FALSE) {    
+MO <- list(interpolate = danso1, forecast=danso2)
     }
-    else MO <- c("'trace' must be 'TRUE' or 'FALSE'")
-    if (plot == TRUE) {
-        goc <- ts
-        Danso <- c(danso1, danso2)
-        if (is.ts(ts)) 
-            Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
-        dubao <- na.omit(Danso)
-        n.dothi <- prod(par()$mfrow)
-        n.dothi
-        if (length(goc) < 50) {
-            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "o", 
-                pch = c(16, 18), xlab = "index", ylab = "data", 
-                main = paste("Abbasov-Mamedova model: \n        C =", 
-                  C, ", w =", w, ", n =", n)))
-            legend("bottomright", "(x,y)", c("ts", "forecast"), 
-                col = c("blue", "red"), lty = c(1, 1), pch = c(16, 
-                  18), cex = 1/n.dothi)
-        }
-        if (length(goc) > 49) {
-            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "l", 
-                xlab = "index", ylab = "data", main = paste("Abbasov-Mamedova model: \n        C =", 
-                  C, ", w =", w, ", n =", n)))
-            legend("bottomright", "(x,y)", c("ts", "forecast"), 
-                col = c("blue", "red"), lty = c(1, 1), cex = 1/n.dothi)
-        }
-        if (n.dothi == 1) {
-            k.ve <- par()$yaxp
-            h = (k.ve[2] - k.ve[1])/k.ve[3]
-            for (i in -2:(k.ve[3] + 2)) abline(h = k.ve[1] + 
-                h * i, lty = 3, col = "gray")
-        }
-    }
+    else 
+MO <- c("'trace' must be 'TRUE' or 'FALSE'")
 }
 
 
@@ -328,7 +303,7 @@ if(type=="NFTS"){
         for (j in 1:n) {
             my.At <- 1/(1 + (C * (ts1[i] - D$Bw[j]))^2)
             MATRIX[i, j] <- my.At
-            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
+            At.j <- paste("(", round2str(my.At,r), "/u", j, sep = "", ")")
             if (j == 1) 
                 temp <- paste(temp, At.j, sep = "")
             else temp <- paste(temp, At.j, sep = ",")
@@ -365,7 +340,7 @@ if(type=="NFTS"){
         for (j in 1:n) {
             my.At <- 1/(1 + (C * (V.f[i] - D$Bw[j]))^2)
             MATRIX.f[dim(MATRIX.f)[1], j] <- my.At
-            At.j <- paste("(", my.At, "/u", j, sep = "", ")")
+            At.j <- paste("(", round2str(my.At,r), "/u", j, sep = "", ")")
             if (j == 1) 
                 temp <- paste(temp, At.j, sep = "")
             else temp <- paste(temp, At.j, sep = ",")
@@ -383,61 +358,91 @@ if(type=="NFTS"){
     table5 <- data.frame(point = thoidiem, forecast = N.f.temp, 
         diff.forecast = V.f)
     table6 <- Ai.f
+
+
+DS.noisuy<-N
+DS.dubao<-N.f
     Danso <- c(N, N.f)
-    if (is.ts(ts)) 
-        Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
-    Danso <- na.omit(Danso)
-    Yt <- ts
-    Ft <- N
-    et <- na.omit(Yt - Ft)
-    ne <- length(et)
-    Yt <- Yt[(length(Yt) - ne + 1):length(Yt)]
-    ME = sum(et)/ne
-    MAE = sum(abs(et))/ne
-    MPE = sum((et/Yt) * 100)/ne
-    MAPE = sum((abs(et)/Yt) * 100)/ne
-    MSE = sum(et * et)/ne
-    RMSE = sqrt(sum(et * et)/ne)
-    accuracy <- c(ME = ME, MAE = MAE, MPE = MPE, MAPE = MAPE, 
-        MSE = MSE, RMSE = RMSE)
+    if (is.ts(ts)){
+    Danso <- ts(Danso, start = start(ts), frequency = frequency(ts))
+DS.noisuy<-ts(DS.noisuy, start = start(Danso), frequency = frequency(Danso))
+DS.dubao<-ts(DS.dubao, end = end(Danso), frequency = frequency(Danso))
+    }
+
+
+
+
+    accuracy<-av.res(Y=data.frame(ts),F=data.frame(NFTS=N))
+    colnames(table1)<-c("set","dow","up","mid")
     KQ1 <- list(type = "NFTS model", table1 = table1, 
         table2 = table2, table3 = table3, table4 = table4, table5 = table5, 
         table6 = table6, accuracy = accuracy)
-    KQ2 <- list(timeseries = Danso, accuracy = accuracy)
+
+    KQ2 <- list(interpolate = DS.noisuy, forecast=DS.dubao)
+
     if (trace == 1) 
         MO <- KQ1
     else MO <- KQ2
-    if (plot == TRUE) {
-        n.dothi <- prod(par()$mfrow)
-        n.dothi
-        goc <- ts
-        dubao <- Danso
-        if (length(goc) < 50) {
-            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "o", 
-                pch = c(16, 18), xlab = "index", ylab = "data", 
-                main = paste("NFTS model: \nC =", 
-                  C, ", w =", w, ", n =", n)))
-            legend("bottomright", "(x,y)", c("ts", "forecast"), 
-                col = c("blue", "red"), lty = c(1, 1), pch = c(16, 
-                  18), cex = 1/n.dothi)
-        }
-        if (length(goc) > 49) {
-            ts.plot(goc, dubao, col = c("blue", "red"), gpars = list(type = "l", 
-                xlab = "index", ylab = "data", main = paste("NFTS model: \nC =", 
-                  C, ", w =", w, ", n =", n)))
-            legend("bottomright", "(x,y)", c("ts", "forecast"), 
-                col = c("blue", "red"), lty = c(1, 1), cex = 1/n.dothi)
-        }
-        if (n.dothi == 1) {
-            k.ve <- par()$yaxp
-            h = (k.ve[2] - k.ve[1])/k.ve[3]
-            for (i in -2:(k.ve[3] + 2)) abline(h = k.ve[1] + 
-                h * i, lty = 3, col = "gray")
-        }
-    }
+}
+
+#---------------
+#Ve do thi {1}
+if(plot==TRUE){
+if(c(par()$mfrow)[1]>2 | c(par()$mfrow)[2]>2 )
+warning("Graph only paint when: c(par()$mfrow)[1] < 3 & c(par()$mfrow)[1] < 3")
+else{
+goc<-ts
+dubao<-Danso
+
+n.dothi <- sum(par()$mfrow)
+n.dothi<- n.dothi/2
+if(n.dothi==1) n.dothi<-1/0.8
+cex.legend<-n.dothi
+main.plot<-c("Actual series vs forecated series by",paste(type,"model of", n, "fuzzy set"),
+paste("with w =",w," and C =",C))
+
+
+
+if (length(goc) < 50) {
+tde1<-c(paste(main.plot[1],main.plot[2]),main.plot[3])
+tde2<-main.plot
+
+if(c(par()$mfrow)[2]==1)
+gve<-list(col=c("blue","red"),cex.main=0.8,type="o",pch=c(15,17),
+xlab = "point", ylab = "data",bty="l",main=tde1)
+
+if(c(par()$mfrow)[2]==2)
+gve<-list(col=c("blue","red"),cex.main=0.8,type="o",pch=c(15,17),
+xlab = "point", ylab = "data",bty="l",main=tde2)
+
+ts.plot(goc,dubao,gpars=gve)
+legend("topleft", "(x,y)", c("Actual","Forecasted"), ncol=2,
+col = c("blue", "red"), lty = c(1, 1), pch = c(15,17), cex = 1/cex.legend,box.lty=0)
 }
 
 
+if (length(goc) > 49) {
+tde1<-c(paste(main.plot[1],main.plot[2]),main.plot[3])
+tde2<-main.plot
+
+if(c(par()$mfrow)[2]==1)
+gve<-list(col=c("blue","red"),cex.main=0.8,type="l",
+xlab = "point", ylab = "data",bty="l",main=tde1)
+
+if(c(par()$mfrow)[2]==2)
+gve<-list(col=c("blue","red"),cex.main=0.8,type="l",
+xlab = "point", ylab = "data",bty="l",main=tde2)
+
+ts.plot(goc,dubao,gpars=gve)
+legend("topleft", "(x,y)", c("Actual","Forecasted"), ncol=2,
+col = c("blue", "red"), lty = c(1, 1), cex = 1/cex.legend,box.lty=0)
+}
+
+if(grid==1)grid.on(v=0)
+}
+}
+#Ve do thi {0}
+#------------------------------
 
 MO
 }

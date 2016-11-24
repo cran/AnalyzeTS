@@ -1,5 +1,6 @@
 Compare.Cs <-
-function (ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, type="Abbasov-Mamedova") 
+function (ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, type="Abbasov-Mamedova",
+complete=NULL) 
 {
   is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
  round(x)) < tol
@@ -21,11 +22,14 @@ function (ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, type="Abbasov-Mamedova")
         stop("Error in 'Cs'!")
    if(type!="Abbasov-Mamedova" & type!="NFTS")stop("Error in 'type'!")
 
-
-
     if(type=="Abbasov-Mamedova")
 {
-    
+    if(!is.null(complete)){
+    if(complete[1]==0){
+     time.tt<-"Calculating..."
+}
+}
+
     computeVt <- function(matrixVt, fuzzyset, w) {
         n <- (dim(matrixVt)[1] - w)
         cot <- dim(matrixVt)[2]
@@ -70,7 +74,57 @@ function (ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, type="Abbasov-Mamedova")
     MAPE <- 1:length(Cs)
     MSE <- 1:length(Cs)
     RMSE <- 1:length(Cs)
-    for (t in 1:length(Cs)) {
+#-------------------------------------------------------------------
+if(!is.null(complete)){
+if(complete[1]==0){
+dev.new(width = 7, height = 3)
+barplot(0,horiz=1,xlim=c(0,100),col="lightblue",
+main=c("Complete: 0%",paste("Time remaining:",time.tt)),
+xlab="Computing speed: Calculating...",cex.main=0.8)
+}
+dong<-"ok"}
+#-------------------------------------------------------------------
+time1<-Sys.time()
+
+for (t in 1:length(Cs)) {
+if(t==2) {
+time2<-Sys.time()
+time<-time2-time1
+time<-substr(time,1,nchar(time))
+time<-as.numeric(time)
+if(time==0) time<-0.02
+}
+if(!is.null(complete)){
+if(t>1){
+time.re<-time*c(complete[2]-complete[1])
+
+giay<-time.re
+phut<-time.re/60
+gio<-time.re/3600
+if(as.numeric(gio)>1) time.tt<-paste("About",round2str(gio,2),"hours")
+else
+if(as.numeric(phut)>1) time.tt<-paste("About",round2str(phut,2),"minutes")
+else
+if(as.numeric(giay)>0) time.tt<-paste("About",round2str(giay,2),"seconds")
+}
+}
+#-------------------------------------------------------------------
+
+if(!is.null(complete) & t>1){
+
+if((100*(complete[1]/complete[2]))<99){
+complete[1]<-complete[1]+1
+barplot(100*(complete[1]/complete[2]),horiz=1,xlim=c(0,100),col="lightblue",
+main=c(paste("Complete: ",round2str(100*(complete[1]/complete[2]),2),"%",sep=""),
+paste("Time remaining:",time.tt)),
+xlab=paste("Computing speed:",round(1/time),"loops/second"),cex.main=0.8)
+}
+if(((100*(complete[1]/complete[2]))>=99) & dong=="ok"){
+dev.off()
+dong<-"no"
+}
+}
+#-------------------------------------------------------------------
         C <- Cs[t]
         MATRIX <- matrix(1:(length(ts1) * n), ncol = n)
         for (i in 1:length(ts1)) {
@@ -114,15 +168,18 @@ function (ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, type="Abbasov-Mamedova")
         "MSE", "RMSE", "MExl", "MAExl", "MPExl", "MAPExl", "MSExl", 
         "RMSExl")
     answer <- table2
-   
 }
 
 
 
 
   if(type=="NFTS"){
-
-    is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
+  if(!is.null(complete)){
+    if(complete[1]==0){
+     time.tt<-"Calculating..."
+}
+}  
+  is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
         round(x)) < tol
     computeVt <- function(matrixVt, fuzzyset, w) {
         n <- (dim(matrixVt)[1] - w)
@@ -185,7 +242,59 @@ function (ts, n = 7, w = 7, D1 = 0, D2 = 0, Cs = NULL, type="Abbasov-Mamedova")
     MAPE <- 1:length(Cs)
     MSE <- 1:length(Cs)
     RMSE <- 1:length(Cs)
+
+#-------------------------------------------------------------------
+if(!is.null(complete)){
+if(complete[1]==0){
+dev.new(width = 7, height = 3)
+barplot(0,horiz=1,xlim=c(0,100),col="lightblue",
+main=c("Complete: 0%",paste("Time remaining:",time.tt)),
+xlab="Computing speed: Calculating...",cex.main=0.8)
+}
+dong<-"ok"
+}
+#-------------------------------------------------------------------
+time1<-Sys.time()
+
     for (t in 1:length(Cs)) {
+
+if(t==2) {
+time2<-Sys.time()
+time<-time2-time1
+time<-substr(time,1,nchar(time))
+time<-as.numeric(time)
+if(time==0) time<-0.02
+}
+if(!is.null(complete)){
+if(t>1){
+time.re<-time*c(complete[2]-complete[1])
+
+giay<-time.re
+phut<-time.re/60
+gio<-time.re/3600
+if(as.numeric(gio)>1) time.tt<-paste("About",round2str(gio,2),"hours")
+else
+if(as.numeric(phut)>1) time.tt<-paste("About",round2str(phut,2),"minutes")
+else
+if(as.numeric(giay)>0) time.tt<-paste("About",round2str(giay,2),"seconds")
+}
+}
+#-------------------------------------------------------------------
+if(!is.null(complete) & t>1){
+if((100*(complete[1]/complete[2]))<99){
+complete[1]<-complete[1]+1
+barplot(100*(complete[1]/complete[2]),horiz=1,xlim=c(0,100),col="lightblue",
+main=c(paste("Complete: ",round2str(100*(complete[1]/complete[2]),2),"%",sep=""),
+paste("Time remaining:",time.tt)),
+xlab=paste("Computing speed:",round(1/time),"loops/second"),cex.main=0.8)
+}
+if(((100*(complete[1]/complete[2]))>=99) & dong=="ok"){
+dev.off()
+dong<-"no"
+}
+}
+#-------------------------------------------------------------------
+     
         C <- Cs[t]
         MATRIX <- matrix(1:(length(ts1) * n), ncol = n)
         for (i in 1:length(ts1)) {

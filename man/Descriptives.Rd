@@ -5,7 +5,7 @@
 Descriptives
 }
 \description{
-This function calculate to return answer which are descriptive statistics values for a continuously variable or continuously variables in data frame.
+Calculating to return answer which are descriptive statistics values for a continuously variable or continuously variables in data frame.
 }
 \usage{
 Descriptives(x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
@@ -23,7 +23,7 @@ Descriptives(x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
   Let plot=list(a1,a2,...) (in a1,a2,...are descriptive statistic values as 'Mean', 'Max',...) to paint comparing graph between variables.
 }
   \item{r}{
-   Rounds the answer to the specified number of decimal places (default 2).
+   Rounds the answer to the specified number of decimal places (default 2).(See \code{\link{round2str}} for details of r paramicter.)
 }
   \item{answer}{
   Form of answers are returned. Let answer=1 or answer=2 (default 1)

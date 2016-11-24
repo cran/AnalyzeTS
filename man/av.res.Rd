@@ -5,7 +5,7 @@
 The criterion to evaluate forecasting model
 }
 \description{
-This function calculate to return answer which are 7 criterion to evaluate forecasting models. They are ME, MAE, MPE, MAPE, MSE, RMSE and U.
+Calculating to return answer which are 7 criterion to evaluate forecasting models, which are ME (Mean error), MAE (Mean absolute error), MPE (Mean percentage error), MAPE (Mean absolute percentage error), MSE (Mean squared error), RMSE (Root of mean square error), and U (Theil's U statistic).
 }
 \usage{
 av.res(Y = NULL, F = NULL, E = NULL, r = 3)
@@ -13,17 +13,17 @@ av.res(Y = NULL, F = NULL, E = NULL, r = 3)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Y}{
-  Observation series.
+  A data frame of univariate time series.
 }
 
   \item{F}{
-  Forecasting series.
+   A data frame of interpolat time series.
 }
   \item{E}{
-  Residual series.
+  A data frame of residual time series.
 }
   \item{r}{
-   Rounds the answer to the specified number of decimal places (default 3).
+Display results returned to the specified number of decimal places (default 3). (See \code{\link{round2str}} for details of r paramicter.)
 }
 }
 \details{
@@ -41,20 +41,22 @@ MSE = sum(et*et)/n
 
 RMSE = sqrt(sum(et*et)/n)
 
-U = sqrt(sum((Yt-Ft)*(Yt-Ft)))/sqrt((Yt-Y(t-1))*(Yt-Y(t-1)))
+U = RMSE of the forecast/RMSE of the naive forecast.
+
 }
 \value{
-\item{ME}{Mean Error}
-\item{MAE}{Mean Absolute Error}
-\item{MPE}{Mean Percent Error (unit: \%)}
-\item{MAPE}{Mean Absolute Percent Error (unit: \%)}
-\item{MSE}{Mean Square Error}
-\item{RMSE}{Root of Mean Square Error}
-\item{U}{Number Theil U}
-\item{min.model}{The best model follow a criterion to evaluate forecasting model}
+\item{ME}{Mean Error.}
+\item{MAE}{Mean Absolute Error.}
+\item{MPE}{Mean Percent Error (unit: \%).}
+\item{MAPE}{Mean Absolute Percent Error (unit: \%).}
+\item{MSE}{Mean Square Error.}
+\item{RMSE}{Root of Mean Square Error.}
+\item{U}{Number Theil U.}
+\item{min.model}{The best model follow a criterion to evaluate forecasting model.}
 }
 \references{
-\url{http://www.tailieu.tv/tai-lieu/bai-giang-quy-trinh-du-bao-khao-sat-du-lieu-va-lua-chon-mo-hinh-22414/}
+\url{http://www.tailieu.tv/tai-lieu/bai-giang-quy-trinh-du-bao-
+khao-sat-du-lieu-va-lua-chon-mo-hinh-22414/}
 }
 \author{
 Nguyen Thi Diem My <myntdhg@gmail.com>
@@ -68,22 +70,54 @@ This function just receive data frame. You must translate your series to data fr
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
-#Calculate moving average
+#----------The moving average models-------------------------
 library(TTR)
-data(ttrc)
-sma.200<-as.ts(SMA(ttrc[,"Close"],200))
-ema.200<-as.ts(EMA(ttrc[,"Close"],200))
-dema.200<-as.ts(DEMA(ttrc[,"Close"],200))
-wma.200<-as.ts(WMA(ttrc[,"Close"],200))
-evwma.200<-as.ts(EVWMA(ttrc[,"Close"],ttrc[,"Volume"],200))
-zlema.200<-as.ts(ZLEMA(ttrc[,"Close"],200))
-vwap.200<-as.ts(VWAP(ttrc[,"Close"],ttrc[,"Volume"],200))
+data(enrollment)
+sma5<-ts(SMA(enrollment,5),start=1971)
+dsma5.5<-ts(SMA(SMA(enrollment)),start=1971)
+cma5<-as.ts(CMA(enrollment,5))
+ses.002<-as.ts(SES(enrollment,0.002))
 
 #Translate series to data frame
-chuoigoc<-data.frame(ttrc[,"Close"])
-dubao<-data.frame(sma.200,ema.200,dema.200,wma.200,evwma.200,zlema.200,vwap.200)
+actual<-data.frame(enrollment)
+forecasted<-data.frame(sma5,dsma5.5,cma5,ses.002)
 
 #Comparing forecasting models
-av.res(Y=chuoigoc,F=dubao,r=5)
-}
+av.res(Y=actual,F=forecasted,r=5)
 
+
+#----------The liner and arima models-------------------------
+#Loading data
+#data(enrollment)
+
+#Liner model
+#t<-1:length(enrollment)
+#lm.model<-lm(enrollment~t)
+
+#Arima modle
+#arima.model<-arima(enrollment,order=c(1,1,0))
+
+#Translate residual series to data frame
+#actual<-data.frame(enrollment)
+#residual.models<-data.frame(lm=lm.model$resid,arima=arima.model$resid)
+
+#Comparing forecasting models
+#av.res(Y=actual,E=residual.models)
+
+
+#----------The fuzzy time series models-------------------------
+#Following example(fuzzy.ts1)
+#Comparing fuzzy time series models for lh time series
+#from example of fuzzy.ts1 function
+#av.res(Y=data.frame(lh),F=data.frame(chen10,singh10,heuristic10,chenhsu6))
+
+#Following example(Gfuzzy.ts1)
+#Comparing fuzzy time series models for lh time series
+#from example of Gfuzzy.ts1 function
+#av.res(Y=data.frame(lh),F=KQ3)
+
+#Following example(Gfuzzy.ts2)
+#Comparing fuzzy time series models for enrollment time series
+#from example of Gfuzzy.ts2 function
+#av.res(Y=data.frame(enrollment),F=g.fuzzy1$interpolate)
+}

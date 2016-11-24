@@ -1,10 +1,9 @@
 Frequencies <-
-function (x, plot = FALSE, r = 2, answer = 1) 
+function (x, plot = FALSE,r=2,answer = 1) 
 {
-    se <- function(y) {
-        kq <- sd(y)/sqrt(length(y))
-        kq
-    }
+
+#function sona {1}
+
     sona <- function(x) {
         f <- x
         f[!is.na(f)] <- 0
@@ -12,7 +11,10 @@ function (x, plot = FALSE, r = 2, answer = 1)
         s <- sum(f == 1)
         s
     }
-    mieuta.char <- function(x, r = 2) {
+#function sona {0}
+
+#function mieuta.char {1}
+mieuta.char <- function(x) {
         if (is.vector(x) || is.ts(x)) 
             na <- sona(x)
         else na <- sona(as.vector(x))
@@ -46,12 +48,11 @@ function (x, plot = FALSE, r = 2, answer = 1)
                 ten <- names(tb)[1:5]
                 ten <- c(ten, "orther")
             }
-            ten <- paste(ten, "N:", sep = "")
-            temp <- 1:(5 + cong)
+            ten <- paste(ten, ":", sep = "")
+            temp <- 1:(2 + cong)
             b <- matrix(temp, ncol = 1)
-            rownames(b) <- c("N:", "NaN:", ten, "VAR:", "SD:", 
-                "SE:")
-            colnames(b) <- c("x")
+            rownames(b) <- c("N:", "NaN:", ten)
+            colnames(b) <- c("")
             b[1, 1] <- length(x)
             b[2, 1] <- na
             if (cong == 1) 
@@ -94,34 +95,40 @@ function (x, plot = FALSE, r = 2, answer = 1)
                 b[7, 1] <- tb[5]
                 b[8, 1] <- sum(tb[6:length(tb)])
             }
-            b[(3 + cong), 1] <- var(x)
-            b[(4 + cong), 1] <- sd(x)
-            b[(5 + cong), 1] <- se(x)
-            KQ <- round(b, r)
+            KQ <- b
         }
         if (length(x) == 0) {
             b <- matrix(1, ncol = 1)
             rownames(b) <- c("NaN:")
-            colnames(b) <- c("x")
+            colnames(b) <- c("")
             b[1, 1] <- na
             KQ <- b
         }
         KQ
     }
+
+#function mieuta.char {0}
+
+#function  mieuta.data.frame.char{1}
     mieuta.data.frame.char <- function(x, r) {
         l <- as.list(colnames(x))
-        for (i in 1:dim(x)[2]) l[[i]] <- mieuta.char(x[, i], 
-            r)
-        for (i in 1:dim(x)[2]) colnames(l[[i]]) <- colnames(x)[i]
+        names(l)<-colnames(x)
+        for (i in 1:dim(x)[2]) l[[i]] <- mieuta.char(x[, i])
+        for (i in 1:dim(x)[2]) colnames(l[[i]]) <-"" 
         l
     }
+#function  mieuta.data.frame.char{0}
+
+
+
+
     if (is.vector(x) || is.ts(x) || is.factor(x)) {
         if (is.numeric(x)) 
             stop("You shold use Discriptives function to statistic!")
         else {
             if (is.vector(x) || is.ts(x) || is.factor(x)) {
                 if (!is.numeric(x)) 
-                  statistic <- mieuta.char(x, r)
+                  statistic <- mieuta.char(x)
                 if (answer == 1) 
                   statistic <- statistic
                 else if (answer == 2) 
@@ -157,23 +164,21 @@ function (x, plot = FALSE, r = 2, answer = 1)
             }
         if (is.matrix(statistic)) {
             sdong <- 1:dim(statistic)[1]
-            sdong <- sdong[-c(1, 2, (length(sdong) - 2), (length(sdong) - 
-                1), length(sdong))]
+            sdong <- sdong[-c(1, 2)]
             ve.pie <- as.table(statistic[sdong, ])
             pie(ve.pie, col = c(11:(length(sdong) + 10)), labels = paste(names(ve.pie), 
-                round((ve.pie/sum(ve.pie)), r) * 100, "%"), init.angle = 0, 
+                as.numeric(round2str((ve.pie/sum(ve.pie)), r)) * 100, "%"), init.angle = 0, 
                 main = "x")
         }
         if (is.list(statistic)) {
             if (length(statistic) == 1) {
                 statistic.temp <- as.matrix(as.data.frame(statistic))
                 sdong <- 1:dim(statistic.temp)[1]
-                sdong <- sdong[-c(1, 2, (length(sdong) - 2), 
-                  (length(sdong) - 1), length(sdong))]
+                sdong <- sdong[-c(1, 2)]
                 ve.pie <- as.table(statistic.temp[sdong, ])
                 pie(ve.pie, col = c(11:(length(sdong) + 10)), 
-                  labels = paste(names(ve.pie), round((ve.pie/sum(ve.pie)), 
-                    r) * 100, "%"), init.angle = 0, main = dimnames(statistic)[[2]])
+                  labels = paste(names(ve.pie), as.numeric(round2str((ve.pie/sum(ve.pie)), 
+                    r)) * 100, "%"), init.angle = 0, main = dimnames(statistic)[[2]])
             }
             if (length(statistic) > 1) {
                 if (length(statistic) == 2) 
@@ -211,12 +216,11 @@ function (x, plot = FALSE, r = 2, answer = 1)
                 for (ve in 1:length(statistic)) {
                   statistic.temp <- as.matrix(as.data.frame(statistic[[ve]]))
                   sdong <- 1:dim(statistic.temp)[1]
-                  sdong <- sdong[-c(1, 2, (length(sdong) - 2), 
-                    (length(sdong) - 1), length(sdong))]
+                  sdong <- sdong[-c(1, 2)]
                   ve.pie <- as.table(statistic.temp[sdong, ])
                   pie(ve.pie, col = c(11:(length(sdong) + 10)), 
-                    labels = paste(names(ve.pie), round((ve.pie/sum(ve.pie)), 
-                      r) * 100, "%"), init.angle = 0, main = colnames(statistic[[ve]]))
+                    labels = paste(names(ve.pie), as.numeric(round2str((ve.pie/sum(ve.pie)), 
+                      r)) * 100, "%"), init.angle = 0, main = colnames(statistic[[ve]]))
                   if (ve > 15) 
                     break
                 }

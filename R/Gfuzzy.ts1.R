@@ -1,10 +1,11 @@
-fuzzy.ts1 <-
-function (ts, n = 5, D1 = 0, D2 = 0, type = c("Chen", "Singh", 
-    "Heuristic", "Chen-Hsu"), bin = NULL, trace = FALSE, plot = FALSE,grid=FALSE) 
-{
-    is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
-        round(x)) < tol
-    rule1 <- function(x2, x1, A3, D) {
+Gfuzzy.ts1 <-
+function(ts,n=5,D1=0,D2=0,type="Chen",bin=NULL,plot=FALSE,grid=FALSE){
+
+#Subfunction {1}
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - round(x)) < tol
+if (!is.numeric(ts)) stop("Error in 'ts'!")
+
+ rule1 <- function(x2, x1, A3, D) {
         tapmo <- as.character(D[, 1])
         low <- D[, 2]
         up <- D[, 3]
@@ -24,6 +25,7 @@ function (ts, n = 5, D1 = 0, D2 = 0, type = c("Chen", "Singh",
             x = low[vt] + 1 * s
         x
     }
+
     rule2 <- function(x3, x2, x1, A4, D) {
         tapmo <- as.character(D[, 1])
         low <- D[, 2]
@@ -49,6 +51,7 @@ function (ts, n = 5, D1 = 0, D2 = 0, type = c("Chen", "Singh",
         else x = low[vt] + 2 * s
         x
     }
+
     rule3 <- function(x3, x2, x1, A4, D) {
         tapmo <- as.character(D[, 1])
         low <- D[, 2]
@@ -74,6 +77,7 @@ function (ts, n = 5, D1 = 0, D2 = 0, type = c("Chen", "Singh",
         else x = low[vt] + 2 * s
         x
     }
+
     namthang <- function(data.ts) {
         batdau <- start(data.ts)
         tanso <- frequency(data.ts)
@@ -130,67 +134,70 @@ function (ts, n = 5, D1 = 0, D2 = 0, type = c("Chen", "Singh",
         else print <- namkq
         print
     }
-    quanhe <- function(ts, type) {
-        qh <- 1:length(ts)
-        if (type == "Chen") 
-            for (i in 1:length(ts)) if (i > 1) 
-                qh[i] <- c("<--")
-        if (type == "Singh") 
-            for (i in 1:length(ts)) if (i > 1) 
-                qh[i] <- c("<--")
-        if (type == "Heuristic") 
-            for (i in 1:length(ts)) if (i > 1) 
-                qh[i] <- c("<--")
-        if (type == "Chen-Hsu") 
-            for (i in 1:length(ts)) if (i > 1) 
-                qh[i] <- c("<--")
-        qh[qh != "<--"] <- "-x-"
-        qh
-    }
-    if (!is.numeric(ts)) 
-        stop("Error in 'ts'!")
-    if (!is.ts(ts)) 
-        stop("Error in 'ts'!")
-    else if (!is.null(dim(ts))) 
-        stop("Error in 'ts'!")
-    kt <- 0
-    for (i in 1:length(ts)) if (is.na(ts[i])) 
-        kt = kt + 1
-    if (kt > 0) 
-        stop("Trong chuoi co gia tri NA!")
-    if (is.na(D1) || !is.numeric(D1) || length(D1)>1) 
-        stop("Error in 'D1'!")
-    if (is.na(D2) || !is.numeric(D2) || length(D2)>1) 
-        stop("Error in 'D2'!")
-    if (is.na(n) || !is.numeric(n) || n < 1 || !is.wholenumber(n) ||length(n)>1) 
-        stop("Error in 'n'!")
-    type <- match.arg(type)
-    if (type != "Chen" & type != "Singh" & type != "Heuristic" & 
-        type != "Chen-Hsu") 
-        stop("Error in 'type'!")
-    if (type != "Chen-Hsu") 
-        if (!is.null(bin)) 
-            stop("'bin' just for Chen-Hsu model!")
-    if (plot != 0 & plot != 1) 
-        stop("Error in 'plot'!")
-    if (grid != 0 & grid != 1) 
-        stop("Error in 'grid'!")
-    if (trace != 0 & trace != 1) 
-        stop("Error in 'trace'!")
-#---------------------------------------------
+#Subfunction {0}
+
+#------------------------------------
+
+#kiem tra cac tham so {1}
+if (!is.ts(ts)) stop("Error in 'ts'!")
+else if (!is.null(dim(ts))) stop("Error in 'ts'!")
+kt <- 0
+for (i in 1:length(ts)) if (is.na(ts[i])) kt = kt + 1
+if (kt > 0) stop("Trong chuoi co gia tri NA!")
+
+if (is.na(D1) | !is.numeric(D1) | length(D1)>1) stop("Error in 'D1'!")
+if (is.na(D2) | !is.numeric(D2) | length(D2)>1) stop("Error in 'D2'!")
+
+if (sum(is.na(n))>0 || sum(!is.numeric(n))>0 || sum(n < 1)>0 || sum(!is.wholenumber(n))>0 || !is.vector(n)) 
+stop("Error in 'n'!")
+if (sum(type != "Chen" & type != "Singh" & 
+type != "Heuristic" & type != "Chen-Hsu") >0)
+stop("Error in 'type'!")
+if(sum(table(type)!=1)>0)stop("Error in 'type'!")
+if (sum(type == "Chen-Hsu")==0) 
+if (!is.null(bin)) stop("'bin' just for Chen-Hsu model!")
+if (sum(type == "Chen-Hsu")!=0 & !is.null(bin)){ 
+if (class(bin)!="list") stop("'bin' must be a list or NULL!")
+else
+if(length(bin)!=length(n)) stop("Length 'bin' must be length 'n'!")
+}
+if (plot != 0 & plot != 1) stop("Error in 'plot'!")
+#kiem tra cac tham so {0}
+
+so.mohinh<-length(n)*length(type)
+
+thamso.n<-rep(n,rep(so.mohinh/length(n),length(n)))
+thamso.D1<-rep(D1,so.mohinh/length(D1))
+thamso.D2<-rep(D2,so.mohinh/length(D2))
+thamso.type<-rep(type,so.mohinh/length(type))
+thamso.bin<-rep("rong",so.mohinh)
+
+if (sum(type == "Chen-Hsu")!=0 & !is.null(bin)){ 
+CH.vt.list<-0
+for(CH in 1:so.mohinh) 
+if(thamso.type[CH]=="Chen-Hsu"){
+CH.vt.list<-CH.vt.list+1
+thamso.bin[CH]<-CH.vt.list
+}}
+
+thamso.mohinh<-data.frame(thamso.n,thamso.D1,thamso.D2,thamso.type,thamso.bin)
+
+#-------------------------------
     d1 = D1
     d2 = D2
     thoidiem <- namthang(ts)
-    quanhemo <- quanhe(ts, type)
     min.x = min(ts) - d1
     max.x = max(ts) + d2
-
-#---------------------------------------------
-if(type=="Chen" | type=="Singh" | type == "Heuristic" | (type=="Chen-Hsu" & is.null(bin))){
-    h = (max.x - min.x)/n
-    k <- 1:(n + 1)
-    U <- 1:n
-    for (i in 1:(n + 1)) {
+#-------------------------------
+#type consit Chen-Hsu vs bin==NUL {1}
+if(sum(type=="Chen-Hsu")>0 & (sum(thamso.bin=="rong")==so.mohinh)){
+mohinh.CH<-thamso.mohinh[thamso.type=="Chen-Hsu",]
+L.CH<-vector("list",c(dim(mohinh.CH)[1]))
+for(mohinh in 1:c(dim(mohinh.CH)[1])){
+h = (max.x - min.x)/n[mohinh]
+k <- 1:c(n[mohinh] + 1)
+U <- 1:c(n[mohinh])
+for (i in 1:(n[mohinh] + 1)) {
         if (i == 1) 
             k[i] = min.x
         else {
@@ -198,11 +205,11 @@ if(type=="Chen" | type=="Singh" | type == "Heuristic" | (type=="Chen-Hsu" & is.n
             U[i - 1] = paste("A", i - 1, sep = "")
         }
     }
-    D <- data.frame(U, low = k[1:n], up = k[2:(n + 1)])
+    D <- data.frame(U, low = k[1:c(n[mohinh])], up = k[2:(n[mohinh] + 1)])
     D$Bw <- (1/2) * (D$low + D$up)
     loai <- 1:length(ts)
     for (i in 1:length(ts)) {
-        for (j in 1:n) {
+        for (j in 1:c(n[mohinh])) {
             if (D$low[j] <= ts[i] & ts[i] <= D$up[j]) {
                 loai[i] = paste("A", j, sep = "")
                 break
@@ -215,11 +222,10 @@ if(type=="Chen" | type=="Singh" | type == "Heuristic" | (type=="Chen-Hsu" & is.n
             loai.old[i] = NA
         else loai.old[i] = loai[i - 1]
     }
-    quanhemokq <- paste(loai, quanhemo, loai.old, sep = "")
     D1 <- data.frame(ts, loai, loai.old)
     b <- table(D1$loai)
-    ni <- 1:n
-    for (i in 1:n) for (j in 1:n) {
+    ni <- 1:c(n[mohinh])
+    for (i in 1:c(n[mohinh])) for (j in 1:c(n[mohinh])) {
         if (paste("A", i, sep = "") == names(b)[j] & j <= length(b)) {
             ni[i] = b[j]
             break
@@ -232,11 +238,78 @@ if(type=="Chen" | type=="Singh" | type == "Heuristic" | (type=="Chen-Hsu" & is.n
         }
     }
     D$ni <- ni
-    a <- 1:(n * n)
-    a <- matrix(a, nrow = n)
-    for (cot in 1:n) {
+
+colnames(D)<-c("set","dow","up","mid","num")
+L.CH[[mohinh]]<-D
+}
+ten.CH<-rep(0,c(dim(mohinh.CH)[1]))
+for(ten.temp in 1:c(dim(mohinh.CH)[1]))
+ten.CH[ten.temp]<-paste("Chen-Hsu model of",mohinh.CH[ten.temp,1],"fuzzy set")
+names(L.CH)<-ten.CH
+KQ<-L.CH
+plot<-0
+}
+#type consit Chen-Hsu vs bin==NUL {0}
+#----------------------------------------
+test1<-prod(length(type)==1,type=="Chen-Hsu")
+
+if((if(test1) 1 else (sum(type=="Chen" | type=="Singh" | type == "Heuristic")>0)) &
+(if(sum(type=="Chen-Hsu")>0) {!is.null(bin)} else 1)){
+KQ.big<-vector("list",length(n))
+for(n.fset in 1:length(n)){
+
+#-------------------------------------------
+    h = (max.x - min.x)/n[n.fset]
+    k <- 1:c(n[n.fset] + 1)
+    U <- 1:c(n[n.fset])
+    for (i in 1:(n[n.fset] + 1)) {
+        if (i == 1) 
+            k[i] = min.x
+        else {
+            k[i] = min.x + (i - 1) * h
+            U[i - 1] = paste("A", i - 1, sep = "")
+        }
+    }
+    D <- data.frame(U, low = k[1:c(n[n.fset])], up = k[2:(n[n.fset] + 1)])
+    D$Bw <- (1/2) * (D$low + D$up)
+    loai <- 1:length(ts)
+    for (i in 1:length(ts)) {
+        for (j in 1:c(n[n.fset])) {
+            if (D$low[j] <= ts[i] & ts[i] <= D$up[j]) {
+                loai[i] = paste("A", j, sep = "")
+                break
+            }
+        }
+    }
+    loai.old <- 1:length(loai)
+    for (i in 1:length(loai)) {
+        if (i == 1) 
+            loai.old[i] = NA
+        else loai.old[i] = loai[i - 1]
+    }
+
+    D1 <- data.frame(ts, loai, loai.old)
+    b <- table(D1$loai)
+    ni <- 1:c(n[n.fset])
+    for (i in 1:c(n[n.fset])) for (j in 1:c(n[n.fset])) {
+        if (paste("A", i, sep = "") == names(b)[j] & j <= length(b)) {
+            ni[i] = b[j]
+            break
+        }
+        else {
+            if (j > length(b)) {
+                ni[i] = 0
+                break
+            }
+        }
+    }
+    D$ni <- ni
+
+    a <- 1:(n[n.fset] * n[n.fset])
+    a <- matrix(a, nrow = n[n.fset])
+    for (cot in 1:c(n[n.fset])) {
         for (i in 2:length(D1$loai.old)) {
-            for (j in 1:n) {
+            for (j in 1:c(n[n.fset])) {
                 if (D1$loai.old[i] == paste("A", cot, sep = "") & 
                   a[j, cot] != paste("A", j, sep = "") & D1$loai[i] == 
                   paste("A", j, sep = "")) {
@@ -246,42 +319,23 @@ if(type=="Chen" | type=="Singh" | type == "Heuristic" | (type=="Chen-Hsu" & is.n
             }
         }
     }
-    for (cot in 1:n) {
-        for (j in 1:n) if (a[j, cot] != paste("A", j, sep = "")) 
+    for (cot in 1:c(n[n.fset])) {
+        for (j in 1:c(n[n.fset])) if (a[j, cot] != paste("A", j, sep = "")) 
             a[j, cot] <- NA
     }
 
-#-------------------
-#Quan he mo
-qh.mo<-0
-for(qh in 1:n){
-a.qh<-as.character(na.omit(a[,qh]))
 
-a.qh1<-paste("A",qh,"->",sep="")
-for(noi in 1:length(a.qh)){
-if(noi==1) a.qh1<-paste(a.qh1,a.qh[noi],sep="")
-if(noi!=1) a.qh1<-paste(a.qh1,a.qh[noi],sep=",")
-}
-qh.mo<-rbind(qh.mo,a.qh1)
-}
-rownames(qh.mo)<-NULL
-qh.mo<-qh.mo[-1,]
-#-------------------
-}
+#-----------------------------------------
 
-
-
-
-
-    if (type == "Chen") {
-        mo <- 1:n
-        for (cot in 1:n) {
+    if (sum(type == "Chen")>0) {
+        mo <- 1:c(n[n.fset])
+        for (cot in 1:c(n[n.fset])) {
             if (cot > 1) 
                 a[a == 1] <- NA
             s <- length(na.omit(a[, cot]))
             a[is.na(a)] <- 1
             if (s == 1) {
-                for (j in 1:n) if (a[j, cot] == paste("A", j, 
+                for (j in 1:c(n[n.fset])) if (a[j, cot] == paste("A", j, 
                   sep = "")) {
                   t = D$Bw[j]
                   break
@@ -290,7 +344,7 @@ qh.mo<-qh.mo[-1,]
             }
             else if (s > 1) {
                 t = 0
-                for (j in 1:n) if (a[j, cot] == paste("A", j, 
+                for (j in 1:c(n[n.fset])) if (a[j, cot] == paste("A", j, 
                   sep = "")) 
                   t = t + D$Bw[j]
                 mo[cot] = t/s
@@ -303,16 +357,18 @@ qh.mo<-qh.mo[-1,]
         for (i in 1:length(loai.old)) {
             if (i == 1) 
                 db[i] = NA
-            else for (j in 1:n) if (loai.old[i] == paste("A", 
+            else for (j in 1:c(n[n.fset])) if (loai.old[i] == paste("A", 
                 j, sep = "")) {
                 db[i] = mo[j]
                 break
             }
+ if (cot == c(n[n.fset])) a[a == 1] <- NA
+
         }
-        db <- ts(db, start = start(ts), frequency = frequency(ts))
-        DB1 <- data.frame(thoidiem, D1$ts, quanhemokq, db)
+        dubao.Chen <- ts(db, start = start(ts), frequency = frequency(ts))
     }
-    if (type == "Singh") {
+#----------------------------------
+    if (sum(type == "Singh")>0) {
         F <- 1:length(ts)
         Ds <- 1:length(ts)
         X <- 1:length(ts)
@@ -432,23 +488,22 @@ qh.mo<-qh.mo[-1,]
                 F[i + 1] = (R + Dt$Bw[l])/(S + 1)
             }
         }
-        F <- ts(F, start = start(ts), frequency = frequency(ts))
-        DB2 <- data.frame(thoidiem, sl.goc = D1$ts, quanhemo = quanhemokq, 
-            .....sl.mo = F)
+        dubao.Singh<- ts(F, start = start(ts), frequency = frequency(ts))
     }
-    if (type == "Heuristic") {
+#---------------------------------------------------
+    if (sum(type == "Heuristic")>0) {
         tap = "begin"
         t.thai = "calm"
         Bw.h = 0
-        for (cot in 1:n) {
-            locate <- rep(0, n)
-            for (i in 1:n) if (!is.na(a[i, cot])) 
+        for (cot in 1:c(n[n.fset])) {
+            locate <- rep(0, n[n.fset])
+            for (i in 1:c(n[n.fset])) if (!is.na(a[i, cot])) 
                 locate[i] = i
             locate[locate == 0] <- NA
             locate <- na.omit(locate)
             if (length(locate) > 0) {
                 l = 0
-                locate[length(locate) + 1] <- (n + 1)
+                locate[length(locate) + 1] <- (n[n.fset] + 1)
                 for (i in 1:(length(locate) - 1)) if (cot >= 
                   locate[i] & cot < locate[i + 1]) {
                   l = i
@@ -506,21 +561,22 @@ qh.mo<-qh.mo[-1,]
                 Heuristic[j] = D.h$Bw.h[bt]
             }
         }
-        Heuristic <- ts(Heuristic, start = start(ts), frequency = frequency(ts))
-        DB3 <- data.frame(thoidiem, sl.goc = D1$ts, quanhemo = quanhemokq, 
-            .....sl.mo = Heuristic)
+        dubao.Heuristic <- ts(Heuristic, start = start(ts), frequency = frequency(ts))
     }
-    if (type == "Chen-Hsu") {
+#-------------------------------------
+    if (sum(type == "Chen-Hsu")>0) {
         if (!is.null(bin)) {
-            if (min(bin) <= min.x || max(bin) >= max.x || length(bin) < 
+          bin.temp<-bin[[n.fset]]
+if(!is.null(bin.temp)) {
+            if (min(bin.temp) <= min.x || max(bin.temp) >= max.x || length(bin.temp) < 
                 1) 
-                stop("Error in 'bin'!")
-            k2 <- 1:(length(bin) + 2)
-            U2 <- 1:(length(bin) + 1)
+                stop(paste("Error in bin[[",n.fset,"]]!",sep=""))
+            k2 <- 1:(length(bin.temp) + 2)
+            U2 <- 1:(length(bin.temp) + 1)
             k2[1] <- min.x
             k2[length(k2)] <- max.x
-            for (t in 2:(length(k2) - 1)) k2[t] = bin[t - 1]
-            for (t in 1:(length(bin) + 1)) U2[t] = paste("A", 
+            for (t in 2:(length(k2) - 1)) k2[t] = bin.temp[t - 1]
+            for (t in 1:(length(bin.temp) + 1)) U2[t] = paste("A", 
                 t, sep = "")
             n2 <- length(U2)
             D.ch <- data.frame(U2, low2 = k2[1:n2], up2 = k2[2:(n2 + 
@@ -538,8 +594,6 @@ qh.mo<-qh.mo[-1,]
             D1.ch <- data.frame(ts, loai2, loai2.old = c(NA, 
                 loai2[1:(length(loai2) - 1)]))
             b <- table(D1.ch$loai2)
-            quanhemokq <- paste(D1.ch$loai2, quanhemo, D1.ch$loai2.old, 
-                sep = "")
             ni <- 1:n2
             for (i in 1:n2) for (j in 1:n2) {
                 if (paste("A", i, sep = "") == names(b)[j] & 
@@ -562,46 +616,7 @@ qh.mo<-qh.mo[-1,]
                 tt = tt + 1
                 v[tt] = t0
             }
-
-
-
-#-------------------
- a <- 1:(n2 * n2)
-    a <- matrix(a, nrow = n2)
-    for (cot in 1:n2) {
-        for (i in 2:length(D1.ch$loai2.old)) {
-            for (j in 1:n2) {
-                if (D1.ch$loai2.old[i] == paste("A", cot, sep = "") & 
-                  a[j, cot] != paste("A", j, sep = "") & D1.ch$loai2[i] == 
-                  paste("A", j, sep = "")) {
-                  a[j, cot] = paste("A", j, sep = "")
-                  break
-                }
-            }
-        }
-    }
-    for (cot in 1:n2) {
-        for (j in 1:n2) if (a[j, cot] != paste("A", j, sep = "")) 
-            a[j, cot] <- NA
-    }
-
-#----------
-#Quan he mo
-qh.mo<-0
-for(qh in 1:n2){
-a.qh<-as.character(na.omit(a[,qh]))
-
-a.qh1<-paste("A",qh,"->",sep="")
-for(noi in 1:length(a.qh)){
-if(noi==1) a.qh1<-paste(a.qh1,a.qh[noi],sep="")
-if(noi!=1) a.qh1<-paste(a.qh1,a.qh[noi],sep=",")
-}
-qh.mo<-rbind(qh.mo,a.qh1)
-}
-rownames(qh.mo)<-NULL
-qh.mo<-qh.mo[-1,]
-#-------------------
-        if (tt == 0) 
+          if (tt == 0) 
                 (v = NULL)
             else v = v[1:tt]
             if (!is.null(v)) {
@@ -658,182 +673,136 @@ qh.mo<-qh.mo[-1,]
                       A[t + 1], Dt)
                 }
             }
-            P <- ts(P, start = start(ts), frequency = frequency(ts))
-            DB4 <- data.frame(thoidiem, sl.goc = D1.ch$ts, quanhemo = quanhemokq, 
-                .....sl.mo = P)
-            namescot1 <- "set"
-            namescot2 <- "dow"
-            namescot3 <- "up"
-            namescot4 <- "mid"
-            namescot5 <- "num"
-            colnames(D.ch) <- c(namescot1, namescot2, namescot3, 
-                namescot4, namescot5)
-        }
-    }
-    if (type == "Chen") 
-        accuracy <- av.res(Y = data.frame(DB1[, 2]), F = data.frame(Chen = DB1[, 
-            4]))
-    if (type == "Singh") 
-        accuracy <- av.res(Y = data.frame(DB2[, 2]), F = data.frame(Singh = DB2[, 
-            4]))
-    if (type == "Heuristic") 
-        accuracy <- av.res(Y = data.frame(DB3[, 2]), F = data.frame(Heuristic = DB3[, 
-            4]))
-    if (type == "Chen-Hsu" & !is.null(bin)) 
-        accuracy <- av.res(Y = data.frame(DB4[, 2]), F = data.frame(`Chen-Hsu` = DB4[, 
-            4]))
-
-    if (trace == TRUE) {
-        namescot1 <- "set"
-        namescot2 <- "dow"
-        namescot3 <- "up"
-        namescot4 <- "mid"
-        namescot5 <- "num"
-
-if(type=="Chen" | type == "Singh" | type=="Heuristic" | (type=="Chen-Hsu" & is.null(bin)))
-colnames(D) <- c(namescot1, namescot2, namescot3, namescot4, namescot5)
-if(type=="Chen-Hsu" & !is.null(bin))
-colnames(D.ch) <- c(namescot1, namescot2, namescot3, namescot4, namescot5)
-
-        namescot1 <- "point"
-        namescot2 <- "ts"
-        namescot3 <- "relative"
-        namescot4 <- "forecast"
-        if (type == "Chen") 
-            colnames(DB1) <- c(namescot1, namescot2, namescot3, 
-                namescot4)
-        if (type == "Singh") 
-            colnames(DB2) <- c(namescot1, namescot2, namescot3, 
-                namescot4)
-        if (type == "Heuristic") 
-            colnames(DB3) <- c(namescot1, namescot2, namescot3, 
-                namescot4)
-        if (type == "Chen-Hsu" & !is.null(bin)) 
-            colnames(DB4) <- c(namescot1, namescot2, namescot3, 
-                namescot4)
-
-        if (type == "Chen") 
-            MO <- list(type = "Chen", table1 = D, table2 = DB1, 
-                relative.groups= qh.mo,accuracy = accuracy)
-        if (type == "Singh") 
-            MO <- list(type = "Singh", table1 = D, table2 = DB2, 
-                relative.groups= qh.mo,accuracy = accuracy)
-        if (type == "Heuristic") 
-            MO <- list(type = "Heuristic", table1 = D, table2 = DB3, 
-                relative.groups= qh.mo,accuracy = accuracy)
-        if (type == "Chen-Hsu") {
-            if (is.null(bin)) 
-                MO <- list(type = "Chen-Hsu", table1 = D)
-            else if (!is.null(bin)) 
-                MO <- list(type = "Chen-Hsu", table1 = D.ch, 
-                  table2 = DB4, relative.groups= qh.mo,accuracy = accuracy)
-        }
-
-if(type=="Chen" | type=="Singh" | type == "Heuristic" | (type=="Chen-Hsu" & !is.null(bin))){
-names(MO$table2)<-c("point","actual","relative","forecasted")}
-
-    }
-    else if (trace == FALSE) {
-        if (type == "Chen") 
-            MO <- DB1[, 4]
-        if (type == "Singh") 
-            MO <- DB2[, 4]
-        if (type == "Heuristic") 
-            MO <- DB3[, 4]
-        if (type == "Chen-Hsu" & !is.null(bin)) 
-            MO <- DB4[, 4]
-        if (type == "Chen-Hsu" & is.null(bin)){ 
-        namescot1 <- "set"
-        namescot2 <- "dow"
-        namescot3 <- "up"
-        namescot4 <- "mid"
-        namescot5 <- "num"
-        colnames(D) <- c(namescot1, namescot2, namescot3, namescot4, 
-            namescot5)
-            MO <- list(type = "Chen-Hsu", table1 = D)
+            dubao.ChenHsu <- ts(P, start = start(ts), frequency = frequency(ts))
 }
-    }
-    else MO <- c("trace must be 'TRUE' or 'FALSE'")
-    
-if (plot == TRUE) {
-ve<-0
-
-if (type == "Chen") {
-goc <- DB1[, 2]
-dubao <- DB1[, 4]
-ve<-1
-}
-
-
-if (type == "Singh") {
-goc <- DB2[, 2]
-dubao <- DB2[, 4]
-ve<-1
-}
-
-
-if (type == "Heuristic") {
-goc <- DB3[, 2]
-dubao <- DB3[, 4]  
-ve<-1       
-}
-
-if (type == "Chen-Hsu") {
-if (!is.null(bin)) {
-n = dim(D.ch)[1]
-goc <- DB4[, 2]
-dubao <- DB4[, 4]
-ve<-1
 }
 }
 
+if(sum(type=="Chen")==0)dubao.Chen<-rep(0,length(ts))
+if(sum(type=="Singh")==0)dubao.Singh<-rep(0,length(ts))
+if(sum(type=="Heuristic")==0)dubao.Heuristic<-rep(0,length(ts))
+if(sum(type=="Chen-Hsu")==0)dubao.ChenHsu<-rep(0,length(ts))
+ten.Chen<-paste("Chen",n[n.fset],sep="")
+ten.Singh<-paste("Singh",n[n.fset],sep="")
+ten.Heuristic<-paste("Heuristic",n[n.fset],sep="")
+if(!is.null(bin))ten.ChenHsu<-paste("ChenHsu",length(bin[[n.fset]])+1,sep="")
+if(is.null(bin))ten.ChenHsu<-paste("ChenHsu",n[[n.fset]],sep="")
+ten.KQ.small<-c(ten.Chen,ten.Singh,ten.Heuristic,ten.ChenHsu)
 
-if(ve==1){
+KQ.small<-data.frame(dubao.Chen,dubao.Singh,dubao.Heuristic,dubao.ChenHsu)
+
+tru.ra<-c(1:4)*c(1*c(!is.na(KQ.small[1,])))
+tru.ra<-tru.ra[-c(1:4)*c(tru.ra==0)]
+if(length(tru.ra)>0){
+KQ.small<-data.frame(KQ.small[,-tru.ra])
+colnames(KQ.small)<-ten.KQ.small[-tru.ra]
+}
+if(length(tru.ra)==0)colnames(KQ.small)<-ten.KQ.small
+
+KQ.big[[n.fset]]<-KQ.small
+}#cua for lon
+
+KQ<-data.frame(thoidiem)
+for(gop.kq in 1:length(n)) KQ<-data.frame(KQ,KQ.big[[gop.kq]])
+KQ<-KQ[,-1]
+if(class(KQ)!="ts")rownames(KQ)<-as.character(thoidiem)
+}#cua if lon
+
+
+
+#---------------
+#Ve do thi {1}
+if(plot==TRUE){
 if(c(par()$mfrow)[1]>2 | c(par()$mfrow)[2]>2 )
 warning("Graph only paint when: c(par()$mfrow)[1] < 3 & c(par()$mfrow)[1] < 3")
 else{
+goc<-ts
+dubao<-KQ
+
 n.dothi <- sum(par()$mfrow)
 n.dothi<- n.dothi/2
 if(n.dothi==1) n.dothi<-1/0.8
-main.plot<-c("Actual series vs forecated series by",paste(type,"model of", n, "fuzzy set"))
+cex.legend<-n.dothi
+main.plot<-c("Actual series vs forecated series by","fuzzy time series models")
+G.lty<-c(1,rep(2:(length(n)+1),length(type)))
+G.col<-c(1,rep(2:(length(type)+1),length(n)))
+G.pch<-c(8,rep(15:(length(n)+14),length(type)))
+
+kieuduong<-rep(1,100000)
+mausac<-rep(c("burlywood4","darkgreen","deepskyblue3","chartreuse4","firebrick2",
+"darkorchid","gold","darkslateblue","deeppink","burlywood2","lightsalmon2",
+"mediumpurple","mediumseagreen","greenyellow","lightslateblue","mistyrose3",
+"indianred1","indianred4","maroon","orange","plum2","sienna2","orange4",
+"red1","slategray3"),10000)
+kieudiem<-rep(c(15,17,19),100000)
+
+for(id in 1:length(G.lty))G.lty[id]<-kieuduong[id]
+for(id in 1:length(G.col))G.col[id]<-mausac[id]
+for(id in 1:length(G.pch))G.pch[id]<-kieudiem[id]
+
+
+
+
+
+
+
+
+
+
+KQ1<-data.frame(KQ,ts)
+
+y.range<-max(KQ1,na.rm=1)-min(KQ1,na.rm=1)
+y.min<-min(KQ1,na.rm=1)-1/12*(y.range)
+y.max<-max(KQ1,na.rm=1)
+if((length(n)*length(type)>4)&(length(n)*length(type)<8))y.max<-y.max+1/10*(y.range)
+if((length(n)*length(type)>8)&(length(n)*length(type)<16))y.max<-y.max+2/10*(y.range)
+if((length(n)*length(type)>16))y.max<-y.max+3/10*(y.range)
+
+if((c(par()$mfrow)[1]==1)&(c(par()$mfrow)[2]==1))n.chuthich<-4
+if((c(par()$mfrow)[1]==1)&(c(par()$mfrow)[2]==2))n.chuthich<-2
+if((c(par()$mfrow)[1]==2)&(c(par()$mfrow)[2]==1))n.chuthich<-5
+if((c(par()$mfrow)[1]==2)&(c(par()$mfrow)[2]==2))n.chuthich<-3
 
 if (length(goc) < 50) {
+tde1<-c(paste(main.plot[1],main.plot[2]))
+tde2<-main.plot
+
 if(c(par()$mfrow)[2]==1)
-plot(goc, col = "blue", main =paste(main.plot[1],main.plot[2]),cex.main=0.8, type = "o", pch = 15, 
-ylim = c(min(c(goc, dubao), na.rm = 1), max(c(goc, dubao), na.rm = 1)), 
-xlab = "point", ylab = "data",bty="l")
+gve<-list(col=G.col,cex.main=0.8,type="o",pch=G.pch,ylim=c(y.min,y.max),
+xlab = "point", ylab = "data",bty="l",main=tde1,lty=G.lty)
 
 if(c(par()$mfrow)[2]==2)
-plot(goc, col = "blue", main =c(main.plot[1],main.plot[2]),cex.main=0.8, type = "o", pch = 15, 
-ylim = c(min(c(goc, dubao), na.rm = 1), max(c(goc, dubao), na.rm = 1)), 
-xlab = "point", ylab = "data",bty="l")
+gve<-list(col=G.col,cex.main=0.8,type="o",pch=G.pch,ylim=c(y.min,y.max),
+xlab = "point", ylab = "data",bty="l",main=tde2,lty=G.lty)
 
-lines(dubao, col = "red", type = "o", pch = 17)
-legend("topleft", "(x,y)", c("Actual","Forecasted"), ncol=2,
-col = c("blue", "red"), lty = c(1, 1), pch = c(15,17), cex = 1/n.dothi,box.lty=0)
+ts.plot(goc,dubao,gpars=gve)
+legend("topleft", "(x,y)", c("Actual",colnames(KQ)), ncol=n.chuthich,
+col = G.col, lty = G.lty, pch = G.pch, cex = 1/cex.legend,box.lty=0)
 }
+
 
 if (length(goc) > 49) {
+tde1<-c(paste(main.plot[1],main.plot[2]))
+tde2<-main.plot
 
 if(c(par()$mfrow)[2]==1)
-plot(goc, col = "blue", main =paste(main.plot[1],main.plot[2]),cex.main=0.8, type = "l", 
-ylim = c(min(c(goc, dubao), na.rm = 1), max(c(goc, dubao), na.rm = 1)), 
-xlab = "point", ylab = "data",bty="l")
+gve<-list(col=G.col,cex.main=0.8,type="l",ylim=c(y.min,y.max),
+xlab = "point", ylab = "data",bty="l",main=tde1,lty=G.lty)
 
 if(c(par()$mfrow)[2]==2)
-plot(goc, col = "blue", main =c(main.plot[1],main.plot[2]),cex.main=0.8, type = "l",
-ylim = c(min(c(goc, dubao), na.rm = 1), max(c(goc, dubao), na.rm = 1)), 
-xlab = "point", ylab = "data",bty="l")
+gve<-list(col=G.col,cex.main=0.8,type="l",ylim=c(y.min,y.max),
+xlab = "point", ylab = "data",bty="l",main=tde2,lty=G.lty)
 
-lines(dubao, col = "red", type = "l")
-legend("topleft", "(x,y)", c("Actual","Forecasted"),ncol=2, 
-col = c("blue", "red"), lty = c(1, 1), cex = 1/n.dothi,box.lty=0)
+ts.plot(goc,dubao,gpars=gve)
+legend("topleft", "(x,y)", c("Actual",colnames(KQ)), ncol=n.chuthich,
+col = G.col, lty = G.lty, cex = 1/cex.legend,box.lty=0)
 }
 
-if(grid==1)grid.on(v=0)
+if(grid==1)grid.on()
+}
+}
+#Ve do thi {0}
+#------------------------------
 
-}
-}
-}
-MO
+KQ
 }

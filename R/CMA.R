@@ -8,7 +8,7 @@ function (x, n = 5)
         round(num)) < tol
     if (is.na(L) || !is.numeric(L) || is.null(L) || !is.wholenumber(n) || 
         L < 2) 
-        stop("Error in n!")
+        stop("Error in 'n'!")
     sona <- function(x) {
         f <- x
         f[!is.na(f)] <- 0
@@ -50,7 +50,7 @@ function (x, n = 5)
         a = "so le"
     else if (sodu == 0) 
         a = "so chan"
-    else stop("L khong phu hop")
+    else stop("Error in 'n'!")
     tog <- function(x, L1, L2) {
         S = 0
         for (i in L1:L2) S = S + x[i]

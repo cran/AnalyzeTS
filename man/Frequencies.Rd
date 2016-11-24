@@ -5,7 +5,7 @@
 Frequencies
 }
 \description{
-This function calculate to return answer which are descriptive statistics values for a discrete variable or discrete variables in data frame.
+Calculating to return answer which are descriptive statistics values for a discrete variable or discrete variables in data frame.
 }
 \usage{
 Frequencies(x, plot = FALSE, r = 2, answer = 1)
@@ -31,10 +31,7 @@ Statistic descriptive values are calculated by theory of base statistic.
 \value{
 \item{N}{Length sample}
 \item{NaN}{Number NA values}
-\item{(xi)N}{Length of xi}
-\item{VAR}{Variance value}
-\item{SD}{Standard Deviation}
-\item{SE}{Standard Deviation of the Estimated Means}
+\item{xi}{Length of xi}
 }
 \references{
 Theory of base statistic.
@@ -52,14 +49,14 @@ You must not withdraw continuously variables from data frame. When you let a dat
 \code{\link{Descriptives}}, \code{\link{Dgroup}}
 }
 \examples{
-#Load data
+#Loading data
 library(MASS)
-data(crabs)
+attach(quine)
 
 #Descriptive for a discrete variable
-Frequencies(crabs$sp,plot=TRUE)
+Frequencies(Age,plot=TRUE)
 
-#Descriptive for discrete variables
-Frequencies(crabs,answer=2,plot=TRUE)
+#Descriptive for discrete more variables
+Frequencies(quine,answer=2,plot=TRUE)
 }
 
