@@ -31,7 +31,7 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
         b[9, 1] <- var(x)
         b[10, 1] <- sd(x)
         b[11, 1] <- se(x)
-        KQ <-as.matrix(as.numeric(round2str(b, r)))
+        KQ <- as.matrix(as.numeric(round2str(b, r)))
         rownames(KQ) <- c("N:", "NaN:", "Min:", "1sq QU:", "Median:", 
             "Mean:", "3rd QU:", "Max:", "VAR:", "SD:", "SE:")
         colnames(KQ) <- ""
@@ -57,7 +57,7 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
             chuthich2 <- paste("Kurtosis: ", nhon)
             h <- density(x)
             par(mfrow = c(2, 2))
-            ts.plot(x, col = "blue",main="Series x")
+            ts.plot(x, col = "blue", main = "Series x")
             hist(x, probability = TRUE, xlim = range(h$x), ylim = c(0, 
                 (max(h$y) + mean(h$y))), border = "blue")
             lines(h, col = "red")
@@ -68,9 +68,8 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
         }
         else print("Can not plot Graph!")
     }
-     if (answer != 1 & answer != 2) 
+    if (answer != 1 & answer != 2) 
         stop("'answer' must be 1 or 2!")
-
     if (is.vector(x) || is.ts(x) || is.factor(x)) {
         if (!is.numeric(x)) 
             stop("You shold use Frequencies function to statistic!")
@@ -174,10 +173,11 @@ function (x, plot = FALSE, r = 2, answer = 1, statistic = "ALL")
                   for (solanve in 1:length(vt.ve)) {
                     ve <- as.table(statistic[vt.ve[solanve], 
                       ])
-nhan.y<-rownames(statistic)[vt.ve[solanve]]
-nhan.y<-substr(nhan.y,1,nchar(nhan.y)-1)
-                    number <- barplot(ve, ylab = nhan.y, 
-                      col = "white", border = "blue")
+                    nhan.y <- rownames(statistic)[vt.ve[solanve]]
+                    nhan.y <- substr(nhan.y, 1, nchar(nhan.y) - 
+                      1)
+                    number <- barplot(ve, ylab = nhan.y, col = "white", 
+                      border = "blue")
                     text(number, ve - ve/2, ve)
                   }
                 }

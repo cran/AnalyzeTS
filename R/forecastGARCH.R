@@ -72,9 +72,9 @@ function (fitARMA, fitGARCH, r = 3, trace = FALSE, newxreg = NULL)
         for (i in 1:length(ts)) x[i] <- ts[length(ts) - i + 1]
         x
     }
-    if (class(fitARMA) != "Arima") 
+    if (class(fitARMA)[1] != "Arima") 
         stop("Error for fitARMA!")
-    if (class(fitGARCH) != "garch") 
+    if (class(fitGARCH)[1] != "garch") 
         stop("Error for fitGARCH!")
     coefGARCH <- fitGARCH$coef
     n = length(coefGARCH)
@@ -116,8 +116,8 @@ function (fitARMA, fitGARCH, r = 3, trace = FALSE, newxreg = NULL)
         frequency = frequency(resARMA))
     point <- namthang(ts.temp)[(length(ts.temp) - n.row):length(ts.temp)]
     kq.point <- point
-    kq.res <- c(rep(" ", (n.row - length(res))), as.numeric(round2str(res, r)), 
-        " ")
+    kq.res <- c(rep(" ", (n.row - length(res))), as.numeric(round2str(res, 
+        r)), " ")
     kq.sq.res <- c(rep(" ", (n.row - length(res2))), as.numeric(round2str(res2, 
         r)), " ")
     kq.ssl <- c(rep(" ", n.row), as.numeric(round2str(SSL, r)))

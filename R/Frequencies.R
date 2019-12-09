@@ -1,9 +1,6 @@
 Frequencies <-
-function (x, plot = FALSE,r=2,answer = 1) 
+function (x, plot = FALSE, r = 2, answer = 1) 
 {
-
-#function sona {1}
-
     sona <- function(x) {
         f <- x
         f[!is.na(f)] <- 0
@@ -11,10 +8,7 @@ function (x, plot = FALSE,r=2,answer = 1)
         s <- sum(f == 1)
         s
     }
-#function sona {0}
-
-#function mieuta.char {1}
-mieuta.char <- function(x) {
+    mieuta.char <- function(x) {
         if (is.vector(x) || is.ts(x)) 
             na <- sona(x)
         else na <- sona(as.vector(x))
@@ -106,22 +100,13 @@ mieuta.char <- function(x) {
         }
         KQ
     }
-
-#function mieuta.char {0}
-
-#function  mieuta.data.frame.char{1}
     mieuta.data.frame.char <- function(x, r) {
         l <- as.list(colnames(x))
-        names(l)<-colnames(x)
+        names(l) <- colnames(x)
         for (i in 1:dim(x)[2]) l[[i]] <- mieuta.char(x[, i])
-        for (i in 1:dim(x)[2]) colnames(l[[i]]) <-"" 
+        for (i in 1:dim(x)[2]) colnames(l[[i]]) <- ""
         l
     }
-#function  mieuta.data.frame.char{0}
-
-
-
-
     if (is.vector(x) || is.ts(x) || is.factor(x)) {
         if (is.numeric(x)) 
             stop("You shold use Discriptives function to statistic!")
@@ -167,8 +152,8 @@ mieuta.char <- function(x) {
             sdong <- sdong[-c(1, 2)]
             ve.pie <- as.table(statistic[sdong, ])
             pie(ve.pie, col = c(11:(length(sdong) + 10)), labels = paste(names(ve.pie), 
-                as.numeric(round2str((ve.pie/sum(ve.pie)), r)) * 100, "%"), init.angle = 0, 
-                main = "x")
+                as.numeric(round2str((ve.pie/sum(ve.pie)), r)) * 
+                  100, "%"), init.angle = 0, main = "x")
         }
         if (is.list(statistic)) {
             if (length(statistic) == 1) {

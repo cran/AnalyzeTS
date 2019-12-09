@@ -1,9 +1,10 @@
 av.res <-
 function (Y = NULL, F = NULL, E = NULL, r = 3) 
 {
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
+    is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x - 
         round(x)) < tol
-    if (is.na(r) || !is.numeric(r) || r < 0 || !is.wholenumber(r) ||length(r)>1) 
+    if (is.na(r) || !is.numeric(r) || r < 0 || !is.wholenumber(r) || 
+        length(r) > 1) 
         stop("Error in 'r'!")
     if (!is.null(Y) & !is.null(F) & !is.null(E)) 
         stop("More members!")
@@ -146,7 +147,6 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x -
             }
             else xl.nho[7] <- 0
         }
-        
         tenmh <- 1:7
         for (ten in 1:7) if (xl.nho[ten] != 0) 
             tenmh[ten] <- colnames(kq)[xl.nho[ten]]
@@ -159,6 +159,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) abs(x -
     if (zero > 0) 
         if (dim(kq)[2] == 1) 
             kq <- t(kq[, 1])
-   kq[,-dim(kq)[2]] <- as.numeric(round2str(kq[,-dim(kq)[2]], r))
-   kq
+    kq[, -dim(kq)[2]] <- as.numeric(round2str(kq[, -dim(kq)[2]], 
+        r))
+    kq
 }
